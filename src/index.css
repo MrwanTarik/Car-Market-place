@@ -1,0 +1,38 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap");
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield; /* For Firefox */
+}
+
+input[type=checkbox]{
+  background-color: #FA9E57;
+}
+
+input[type=checkbox]:checked{
+  background-color: #FA9E57;
+}
+@layer components {
+  .container {
+    @apply max-w-[1380px];
+  }
+}
+@media (max-width: 1379px) {
+  .container {
+    @apply px-4;
+  }
+}
