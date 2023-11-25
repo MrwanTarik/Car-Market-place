@@ -1,9 +1,9 @@
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import chivronBottom from "../../assets/icons/chivron-bottom.svg";
-
+import { useContext } from "react";
+import FilterContext from "../../context/filterContext/FilterContext";
 function PaymentCurrency() {
-
-  const [selectedCurrency, setSelectedCurrency] = useState("");
+  const { selectedCurrency, setSelectedCurrency } = useContext(FilterContext);
   const detailsRef = useRef(null);
 
   const handleSelection = (item) => {

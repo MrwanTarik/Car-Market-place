@@ -1,8 +1,9 @@
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import chivronBottom from "../../assets/icons/chivron-bottom.svg";
-
+import { useContext } from "react";
+import FilterContext from "../../context/filterContext/FilterContext";
 function Gear() {
-  const [checkedGear, setCheckedGear] = useState(false);
+  const { checkedGear, setCheckedGear } = useContext(FilterContext);
   const detailsRef = useRef(null);
 
   const handleCheckboxChange = (event) => {

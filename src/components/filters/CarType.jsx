@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useContext } from "react";
+import FilterContext from "../../context/filterContext/FilterContext";
 function CarType() {
-  const [selectedCarType, setSelectedCarType] = useState("");
+  const { selectedCarType, setSelectedCarType } = useContext(FilterContext);
 
   const handleChange = (value) => {
     setSelectedCarType(value);

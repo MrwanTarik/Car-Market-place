@@ -5,7 +5,6 @@ import Type from "../components/filters/Type";
 import Price from "../components/filters/Price";
 import PaymentCurrency from "../components/filters/PaymentCurrency";
 import PaymentType from "../components/filters/PaymentType";
-import { useState } from "react";
 import { Link } from "react-router-dom";
 import BanType from "../components/filters/BanType";
 import YearManufacturer from "../components/filters/YearManufacturer";
@@ -27,33 +26,12 @@ import SeatsNumber from "../components/filters/SeatsNumber";
 import Market from "../components/filters/Market";
 import { useContext } from "react";
 import FilterContext from "../context/filterContext/FilterContext";
+import VipAnnouncement from "../components/cars/VipAnnouncement";
+import RecentAnnouncement from "../components/cars/RecentAnnouncement"
+import PremiumAds from "../components/cars/PremiumAds";
 function Homepage() {
-  const { newAds, moreFilters, handleMoreFilters,setPaymentOptions} = useContext(FilterContext);
-  // const [newAds, setNewAds] = useState(1425);
-  // const [moreFilters, setMoreFilters] = useState(false);
-  // function handleMoreFilters() {
-  //   setMoreFilters(!moreFilters);
-  // }
-  // const [paymentOptions, setPaymentOptions] = useState({
-  //   credit: false,
-  //   barter: false,
-  //   noPunctuation: false,
-  //   notColored: false,
-  //   accidentalCars: false,
-  //   alloyWheels: false,
-  //   usa: false,
-  //   hatch: false,
-  //   rainSensor: false,
-  //   centralLocking: false,
-  //   parkingRadar: false,
-  //   airConditioning: false,
-  //   seatHeating: false,
-  //   leatherSalon: false,
-  //   xenonLamps: false,
-  //   rearViewCamera: false,
-  //   sideCurtains: false,
-  //   rainSeatVentilationSensor: false,
-  // });
+  const { newAds, moreFilters, handleMoreFilters, setPaymentOptions } =
+    useContext(FilterContext);
   return (
     <main className="container mt-[30px]">
       <form action="" onSubmit={(e) => e.preventDefault()}>
@@ -303,6 +281,9 @@ function Homepage() {
           </div>
         </div>
       </form>
+      <VipAnnouncement />
+      <RecentAnnouncement />
+      <PremiumAds />
     </main>
   );
 }

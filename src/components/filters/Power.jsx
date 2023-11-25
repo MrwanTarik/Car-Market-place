@@ -1,8 +1,7 @@
-import  { useState } from 'react';
-
+import { useContext } from "react";
+import FilterContext from "../../context/filterContext/FilterContext";
 const Power = () => {
-    const [minPower, setMinPower] = useState('');
-    const [maxPower, setMaxPower] = useState('');
+    const { minPower, setMinPower, maxPower, setMaxPower } = useContext(FilterContext);
 
     return (
         <div className="flex justify-between items-center rounded-lg shadow-md h-full ">

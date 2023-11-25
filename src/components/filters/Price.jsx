@@ -1,9 +1,9 @@
-import  { useState } from 'react';
 
+import { useContext } from "react";
+import FilterContext from "../../context/filterContext/FilterContext";
 const Price = () => {
-    const [minPrice, setMinPrice] = useState('');
-    const [maxPrice, setMaxPrice] = useState('');
-
+    const { minPrice, setMinPrice, maxPrice, setMaxPrice } = useContext(FilterContext);
+    
     return (
         <div className="flex justify-between items-center rounded-lg shadow-md h-full ">
             <div className="relative w-[58%]">

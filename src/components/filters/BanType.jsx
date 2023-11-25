@@ -1,8 +1,9 @@
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import chivronBottom from "../../assets/icons/chivron-bottom.svg";
-
+import { useContext } from "react";
+import FilterContext from "../../context/filterContext/FilterContext";
 function BanType() {
-  const [checkedBanType, setCheckedBanType] = useState(false);
+  const { checkedBanType, setCheckedBanType } = useContext(FilterContext);
   const detailsRef = useRef(null);
 
   const handleCheckboxChange = (event) => {

@@ -1,6 +1,8 @@
-import { useState } from "react";
+import { useContext } from "react";
+import FilterContext from "../../context/filterContext/FilterContext";
+
 function Type() {
-  const [selectedType, setSelectedType] = useState("");
+  const { selectedType, setSelectedType } = useContext(FilterContext);
 
   const handleChange = (value) => {
     setSelectedType(value);
