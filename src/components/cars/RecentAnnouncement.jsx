@@ -7,11 +7,11 @@ function RecentAnnouncement() {
   return (
     <div className="mt-[90px]">
       <div className="flex items-center justify-between">
-        <h1 className="font-secondary text-[26px] font-bold leading-8 text-primary ">
+        <h1 className="font-secondary text-[20px] md:text-[26px] font-bold leading-8 text-primary ">
           {" "}
           RECENT ANNOUNCEMENTS
         </h1>
-        <Link to={""} className="text-[16px] font-bold font-primary text-secondary py-[14px] px-5 shadow-md rounded-md flex items-center justify-center">View More</Link>
+        <Link to={""} className="text-[14px] md:text-[16px] font-bold font-primary text-secondary py-[14px] px-5 shadow-md rounded-md flex items-center justify-center text-center min-w-[120px]">View More</Link>
       </div>
       <div className="grid grid-cols-12 mt-[72px] gap-[30px]">
         {data.map((car) => (

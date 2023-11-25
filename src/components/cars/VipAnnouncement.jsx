@@ -5,7 +5,7 @@ function VipAnnouncement() {
   if (loading) return <p>Loading...</p>;
   return (
     <div className="mt-[80px]">
-      <h1 className="font-secondary text-[26px] font-bold leading-8 text-primary ">
+      <h1 className="font-secondary text-[20px] md:text-[26px] font-bold leading-8 text-primary ">
         {" "}
         VIP ANNOUNCEMENTS
       </h1>

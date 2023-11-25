@@ -9,10 +9,16 @@ function Nav() {
   return (
     <header className="py-5 bg-green">
       <nav className="container">
-        <div className="flex justify-between items-center">
-          <div className="flex items-center space-x-[80px]">
-            <img src={logo} alt="logo" width={161} height={46} />
-            <div className="flex items-center space-x-[30px]">
+        <div className="flex nav-holder justify-between items-center">
+          <div className="flex items-center top-nav space-x-5 md:space-x-[80px]">
+            <img
+              className="logo"
+              src={logo}
+              alt="logo"
+              width={161}
+              height={46}
+            />
+            <div className="flex items-center space-x-4 md:space-x-[30px]">
               <Link className="font-primary text-[17px] font-medium leading-7 uppercase text-white">
                 All Ads
               </Link>
@@ -21,7 +27,7 @@ function Nav() {
               </Link>
             </div>
           </div>
-          <div className="flex items-center flex-1 justify-end space-x-[30px]">
+          <div className="flex nav-links items-center flex-1 justify-end md:space-x-[30px]">
             <a
               href="tel:+1234567890"
               className="flex items-center space-x-[10px]"
@@ -39,7 +45,7 @@ function Nav() {
             <Link
               onMouseEnter={() => setHover(true)}
               onMouseLeave={() => setHover(false)}
-              className="flex items-center space-x-[10px] py-4 px-5 rounded-md bg-white "
+              className="flex items-center space-x-[10px] py-4 px-5 rounded-md justify-center bg-white "
               to={""}
             >
               {hover ? <RedHeartIcon /> : <GrayHeartIcon />}
@@ -49,7 +55,7 @@ function Nav() {
             </Link>
             <Link
               to={""}
-              className="flex items-center space-x-[10px] py-4 px-5 rounded-md bg-red"
+              className="flex items-center space-x-[10px]  py-4 px-5 rounded-md bg-red"
             >
               <img src={newLogo} alt="add-Announcement" />
               <p className="font-primary text-[16px] font-medium leading-[21px] text-white ">

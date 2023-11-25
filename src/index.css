@@ -9,6 +9,7 @@
   padding: 0;
   box-sizing: border-box;
 }
+
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none;
@@ -19,12 +20,12 @@ input[type="number"] {
   -moz-appearance: textfield; /* For Firefox */
 }
 
-input[type=checkbox]{
-  background-color: #FA9E57;
+input[type="checkbox"] {
+  background-color: #fa9e57;
 }
 
-input[type=checkbox]:checked{
-  background-color: #FA9E57;
+input[type="checkbox"]:checked {
+  background-color: #fa9e57;
 }
 @layer components {
   .container {
@@ -34,5 +35,53 @@ input[type=checkbox]:checked{
 @media (max-width: 1379px) {
   .container {
     @apply px-4;
+  }
+}
+@media (max-width: 1120px) {
+  .nav-holder {
+    flex-direction: column;
+    gap: 20px;
+  }
+}
+@media (max-width: 767px) {
+  .nav-holder a,
+  .nav-holder button,
+  .nav-holder p {
+    font-size: 14px;
+  }
+  .nav-holder img,
+  .nav-holder svg {
+    width: 18px;
+    height: 18px;
+  }
+  .nav-holder .logo {
+    width: 130px;
+    height: auto;
+  }
+  .nav-links {
+    flex-wrap: wrap;
+    width: 100%;
+  }
+  .nav-links a {
+    width: 49%;
+    margin-left: 0px;
+  }
+  .nav-links a:nth-child(3) {
+    margin-top: 15px;
+    width: 100%;
+    justify-content: center;
+  }
+  .top-nav {
+    width: 100%;
+    justify-content: space-between;
+  }
+  body p, body label , body input, body button{
+    font-size: 14px !important;
+  }
+  .footer {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: start;
   }
 }

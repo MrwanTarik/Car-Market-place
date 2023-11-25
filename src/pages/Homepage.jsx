@@ -242,7 +242,7 @@ function Homepage() {
           <div className="col-span-12  mt-[70px] ">
             <div className="flex justify-between items-center flex-wrap md:flex-nowrap md:gy-0 gap-y-4 ">
               <span className="font-primary text-primary text-[16px] inline-block ">
-                <h2 className="flex items-center font-bold text-primary text-[16px] font-primary">
+                <h2 className="flex items-center font-bold text-primary text-[14px] md:text-[16px] font-primary">
                   Today :{" "}
                   <Link className="font-primary text-link ml-1">
                     {newAds} new ads

@@ -19,17 +19,36 @@ const links = [
 ];
 function Footer() {
   return (
-    <div className="bg-[#E2E2E2] mt-[120px] py-5">
-      <div className="container">
-        <div className="flex flex-wrap gap-[30px] items-center ">
-          {links.map((link) => (
-            <Link className="font-primary text-[16px] font-normal text-secondary" key={link.name} to={link.href}>
-              {link.name}
-            </Link>
-          ))}
+    <>
+      <div className="bg-[#E2E2E2] mt-[120px] py-5">
+        <div className="container">
+          <div className="flex flex-wrap gap-[30px] items-center ">
+            {links.map((link) => (
+              <Link
+                className="font-primary text-[16px] font-normal text-secondary"
+                key={link.name}
+                to={link.href}
+              >
+                {link.name}
+              </Link>
+            ))}
+          </div>
         </div>
       </div>
-    </div>
+      <div className="bg-primary py-[30px]">
+        <div className="container">
+          <div className="flex items-center footer justify-between">
+            <h2 className="font-primary text-[16px] font-bold leading-7 text-white max-w-[528px]">
+              The Site Administration is not responsible for the content of
+              advertising banners and posted announcements.
+            </h2>
+            <p className="font-primary text-[16px] font-normal text-white">
+              2023-2023 Digital Classifieds LLC. TIN: 1305631664
+            </p>
+          </div>
+        </div>
+      </div>
+    </>
   );
 }
 
