@@ -11,18 +11,26 @@ function Nav() {
       <nav className="container">
         <div className="flex nav-holder justify-between items-center">
           <div className="flex items-center top-nav space-x-5 md:space-x-[80px]">
-            <img
-              className="logo"
-              src={logo}
-              alt="logo"
-              width={161}
-              height={46}
-            />
+            <Link to={'/'}>
+              <img
+                className="logo"
+                src={logo}
+                alt="logo"
+                width={161}
+                height={46}
+              />
+            </Link>
             <div className="flex items-center space-x-4 md:space-x-[30px]">
-              <Link className="font-primary text-[17px] font-medium leading-7 uppercase text-white">
+              <Link
+                to={"/"}
+                className="font-primary text-[17px] font-medium leading-7 uppercase text-white"
+              >
                 All Ads
               </Link>
-              <Link className="font-primary text-[17px] font-medium leading-7 uppercase text-white">
+              <Link
+                to={"/dealership-owners"}
+                className="font-primary text-[17px] font-medium leading-7 uppercase text-white"
+              >
                 Car dealerships
               </Link>
             </div>
@@ -46,7 +54,7 @@ function Nav() {
               onMouseEnter={() => setHover(true)}
               onMouseLeave={() => setHover(false)}
               className="flex items-center space-x-[10px] py-4 px-5 rounded-md justify-center bg-white "
-              to={""}
+              to={"/favourite"}
             >
               {hover ? <RedHeartIcon /> : <GrayHeartIcon />}
               <p className="font-primary text-[16px] font-medium leading-[21px] text-secondary">

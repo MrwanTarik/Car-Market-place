@@ -4,7 +4,7 @@ import { RedHeartIcon, GrayHeartIcon } from "../layout/IconHover";
 import { Link } from "react-router-dom";
 import premiumImage from "../../assets/icons/premium.png"
 function CarCard({
-  car: { id, name, price, model, tank, datePosted, moved, location, carImage },
+  car: { key, id, name, price, model, tank, datePosted, moved, location, carImage },
 }) {
   const [heart, setHeart] = useState(false);
   return (
@@ -23,7 +23,7 @@ function CarCard({
           </div>
         </div>
         <div className="h-[236px] ">
-          <img className="h-full w-full rounded-t-[12px]" src={carImage} alt="carImage" />
+          <img className="h-full w-full rounded-t-[12px] object-cover" src={carImage} alt="carImage" />
         </div>
       </div>
       <div className="p-5 rounded-b-[12px] bg-white shadow-md">

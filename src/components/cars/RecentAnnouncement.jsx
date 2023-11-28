@@ -15,9 +15,7 @@ function RecentAnnouncement() {
       </div>
       <div className="grid grid-cols-12 mt-[72px] gap-[30px]">
         {data.map((car) => (
-          <>
             <CarCard key={car.id} car={car} />
-          </>
         ))}
       </div>
     </div>

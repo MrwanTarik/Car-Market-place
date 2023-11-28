@@ -9,7 +9,7 @@
   padding: 0;
   box-sizing: border-box;
 }
-
+favourite-sec
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none;
@@ -31,6 +31,9 @@ input[type="checkbox"]:checked {
   .container {
     @apply max-w-[1380px];
   }
+}
+.fav-sec {
+  min-height: calc(100vh - 96px);
 }
 @media (max-width: 1379px) {
   .container {
@@ -82,6 +85,6 @@ input[type="checkbox"]:checked {
     display: flex;
     flex-direction: column;
     gap: 20px;
-    align-items: start;
+    align-items: flex-start;
   }
 }

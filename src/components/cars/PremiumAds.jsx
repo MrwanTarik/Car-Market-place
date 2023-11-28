@@ -16,9 +16,7 @@ function PremiumAds() {
         </div>
 
         {data.map((car) => (
-          <>
             <CarCard key={car.id} car={car} />
-          </>
         ))}
         <div className="xl:col-span-3 lg:col-span-4 md:col-span-6 col-span-12">
           <PremiumCard />
