@@ -8,7 +8,7 @@ function CarCard({
 }) {
   const [heart, setHeart] = useState(false);
   return (
-    <div id={id} className="xl:col-span-3 lg:col-span-4 md:col-span-6 col-span-12">
+    <Link to={'/car-details'} id={id} className="xl:col-span-3 lg:col-span-4 md:col-span-6 col-span-12">
       <div className="flex-col bg-white rounded-t-[12px] shadow-md relative">
         <div className="absolute bottom-[20px] left-5 top-[20px] right-5 flex flex-col justify-between">
           <div className="flex justify-between">
@@ -40,7 +40,7 @@ function CarCard({
         </p>
         <p className="font-primary text-secondary font-normal leading-[24px] text-[14px]">{`${location}, ${datePosted}`}</p>
       </div>
-    </div>
+    </Link>
   );
 }
 

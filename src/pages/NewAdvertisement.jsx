@@ -5,7 +5,6 @@ import frontView from "../assets/images/front-view.png";
 import insideView from "../assets/images/inside-view.png";
 import { IoIosClose } from "react-icons/io";
 function NewAdvertisement() {
-  const [uploadedImages, setUploadedImages] = useState([]);
   const [formData, setFormData] = useState({
     brand: "",
     fuelType: "",
@@ -48,6 +47,7 @@ function NewAdvertisement() {
     userCity:"",
     userEmail: "",
     userTel: "",
+    uploadedImages:[]
   });
   function handleChange(e) {
     const { name, value } = e.target;
@@ -74,9 +74,12 @@ function NewAdvertisement() {
       };
 
       // Replace or add new uploaded image
-      let updatedImages = [...uploadedImages];
+      let updatedImages = [...formData.uploadedImages];
       updatedImages[index] = newImage;
-      setUploadedImages(updatedImages);
+      setFormData({
+        ...formData,
+        uploadedImages: updatedImages
+      });
     }
   };
 
@@ -87,28 +90,39 @@ function NewAdvertisement() {
         src: URL.createObjectURL(file),
         flipped: 0,
       }));
-      setUploadedImages(uploadedImages.concat(newImages));
+      setFormData({
+        ...formData,
+        uploadedImages: [...formData.uploadedImages, ...newImages]
+      });
     }
   };
 
   const rotateImage = (index, direction) => {
-    setUploadedImages(
-      uploadedImages.map((img, i) =>
-        i === index
-          ? {
-              ...img,
-              flipped: img.flipped + (direction === "clockwise" ? 90 : -90),
-            }
-          : img
-      )
+    const updatedImages = formData.uploadedImages.map((img, i) =>
+      i === index
+        ? {
+            ...img,
+            flipped: img.flipped + (direction === "clockwise" ? 90 : -90),
+          }
+        : img
     );
+  
+    setFormData({
+      ...formData,
+      uploadedImages: updatedImages
+    });
   };
-
+  
   const removeImage = (index) => {
-    setUploadedImages(uploadedImages.filter((_, i) => i !== index));
+    const updatedImages = formData.uploadedImages.filter((_, i) => i !== index);
+  
+    setFormData({
+      ...formData,
+      uploadedImages: updatedImages
+    });
   };
 
-  const imageSlots = uploadedImages.map((image, index) => (
+  const imageSlots = formData.uploadedImages.map((image, index) => (
     <div key={index} className="md:w-[48%] lg:w-[23%] w-full h-[180px] inline-block m-2">
       <img
         src={image.src}
@@ -145,7 +159,7 @@ function NewAdvertisement() {
 
   // Add placeholders to imageSlots if they're not already replaced by an uploaded image
   [frontView, backView, insideView].forEach((placeholder, index) => {
-    if (!uploadedImages[index]) {
+    if (!formData.uploadedImages[index]) {
       imageSlots.splice(
         index,
         0,
@@ -195,8 +209,9 @@ function NewAdvertisement() {
 
   function handleFormSubmit(e) {
     e.preventDefault();
+    console.log(formData);
   }
-  console.log(formData);
+  
   return (
     <form action="" onSubmit={handleFormSubmit}>
       <div className="container">

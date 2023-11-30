@@ -2,6 +2,7 @@ import { createContext } from "react";
 import { useState } from "react";
 const FilterContext = createContext();
 export const FilterProvider = ({ children }) => {
+  const [cars, setCars] = useState([]);
   const [checkedBrand, setCheckedBrand] = useState(false);
   const [checkedModel, setCheckedModel] = useState(false);
   const [selectedType, setSelectedType] = useState("");
@@ -109,6 +110,8 @@ export const FilterProvider = ({ children }) => {
         setCheckedSeatsNumber,
         checkedMarketAssembled,
         setCheckedMarketAssembled,
+        cars,
+        setCars,
       }}
     >
       {children}

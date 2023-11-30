@@ -1,12 +1,12 @@
 import useFetchData from "./useFetchCars";
 import CarCard from "./CarCard";
 import { Link } from "react-router-dom";
-function RecentAnnouncement() {
+function RecentAnnouncement({carDetail}) {
   const { data, loading, error } = useFetchData(`recentAnnouncement`);
   if (loading) return <p>Loading...</p>;
   return (
     <div className="mt-[90px]">
-      <div className="flex items-center justify-between">
+      <div className={`flex items-center justify-between ${carDetail ? "hidden" : "flex"}`}>
         <h1 className="font-secondary text-[20px] md:text-[26px] font-bold leading-8 text-primary ">
           {" "}
           RECENT ANNOUNCEMENTS
