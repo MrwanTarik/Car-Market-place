@@ -8,6 +8,7 @@ import DealershipOwners from "./pages/DealershipOwners";
 import DealershipDetails from "./components/dealership/DealershipDetails";
 import Faq from "./pages/Faq";
 import Favourite from "./pages/Favourite";
+import NewAdvertisement from "./pages/NewAdvertisement";
 function App() {
   return (
     <BrowserRouter>
@@ -23,6 +24,7 @@ function App() {
           <Route path="/cars/:id" element={<CarDetails />} />
           <Route path="/help" element={<Faq />} />
           <Route path="/favourite" element={<Favourite />} />
+          <Route path="/new-advertisement" element={<NewAdvertisement />} />
         </Routes>
         <Footer />
       </FilterProvider>

@@ -62,7 +62,7 @@ function Nav() {
               </p>
             </Link>
             <Link
-              to={""}
+              to={"/new-advertisement"}
               className="flex items-center space-x-[10px]  py-4 px-5 rounded-md bg-red"
             >
               <img src={newLogo} alt="add-Announcement" />

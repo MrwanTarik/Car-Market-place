@@ -2,6 +2,11 @@
 export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
+    extend: {
+      rotate: {
+        'y-180': 'rotateY(180deg)',
+      },
+    },
     screens: {
       sm: "576px",
       md: "768px",
