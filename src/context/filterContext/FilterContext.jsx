@@ -3,8 +3,8 @@ import { useState } from "react";
 const FilterContext = createContext();
 export const FilterProvider = ({ children }) => {
   const [cars, setCars] = useState([]);
-  const [checkedBrand, setCheckedBrand] = useState(false);
-  const [checkedModel, setCheckedModel] = useState(false);
+  const [brandId, setBrandId] = useState();
+  const [checkedModel, setCheckedModel] = useState({});
   const [selectedType, setSelectedType] = useState("");
   const [checkedCity, setCheckedCity] = useState(false);
   const [minPrice, setMinPrice] = useState("");
@@ -22,8 +22,8 @@ export const FilterProvider = ({ children }) => {
   const [selectedVolumeMax, setSelectedVolumeMax] = useState("");
   const [minPower, setMinPower] = useState("");
   const [maxPower, setMaxPower] = useState("");
-  const [minMileage, setMinMileage] = useState('');
-  const [maxMileage, setMaxMileage] = useState('');
+  const [minMileage, setMinMileage] = useState("");
+  const [maxMileage, setMaxMileage] = useState("");
   const [selectedCarType, setSelectedCarType] = useState("");
   const [checkedOwnersNumber, setCheckedOwnersNumber] = useState(false);
   const [checkedSeatsNumber, setCheckedSeatsNumber] = useState(false);
@@ -62,8 +62,8 @@ export const FilterProvider = ({ children }) => {
         moreFilters,
         handleMoreFilters,
         setPaymentOptions,
-        checkedBrand,
-        setCheckedBrand,
+        brandId,
+        setBrandId,
         checkedModel,
         setCheckedModel,
         selectedType,
