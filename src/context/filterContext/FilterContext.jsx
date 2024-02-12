@@ -1,10 +1,10 @@
-import { createContext } from "react";
+import { createContext, useEffect } from "react";
 import { useState } from "react";
 const FilterContext = createContext();
 export const FilterProvider = ({ children }) => {
   const [cars, setCars] = useState([]);
   const [brandId, setBrandId] = useState();
-  const [checkedModel, setCheckedModel] = useState({});
+  const [checkedModels, setCheckedModels] = useState([]);
   const [selectedType, setSelectedType] = useState("");
   const [checkedCity, setCheckedCity] = useState(false);
   const [minPrice, setMinPrice] = useState("");
@@ -64,8 +64,8 @@ export const FilterProvider = ({ children }) => {
         setPaymentOptions,
         brandId,
         setBrandId,
-        checkedModel,
-        setCheckedModel,
+        checkedModels,
+        setCheckedModels,
         selectedType,
         setSelectedType,
         checkedCity,

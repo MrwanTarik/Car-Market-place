@@ -4,19 +4,20 @@ import chivronBottom from "../../assets/icons/chivron-bottom.svg";
 import { useContext } from "react";
 import FilterContext from "../../context/filterContext/FilterContext";
 function Model() {
-  const { checkedModel, setCheckedModel, brandId } = useContext(FilterContext);
+  const { checkedModels, setCheckedModels, brandId } =
+    useContext(FilterContext);
   const [models, setModels] = useState([]);
   const detailsRef = useRef(null);
   const initialCheckedModelState = {};
   const handleCheckboxChange = (event) => {
     const item = event.target.name;
-    setCheckedModel((prevItems) => ({
+    setCheckedModels((prevItems) => ({
       ...prevItems,
       [item]: !prevItems[item],
     }));
   };
-  const selectedOptions = Object.keys(checkedModel).filter(
-    (item) => checkedModel[item]
+  const selectedOptions = Object.keys(checkedModels).filter(
+    (item) => checkedModels[item]
   );
 
   const summaryText =
@@ -24,7 +25,7 @@ function Model() {
 
   // reseting checkedModels state when brandId changes
   useEffect(() => {
-    setCheckedModel(initialCheckedModelState);
+    setCheckedModels(initialCheckedModelState);
   }, [brandId]);
   // get car models
 
@@ -65,7 +66,7 @@ function Model() {
                 <input
                   type="checkbox"
                   name={model.name}
-                  checked={checkedModel[model.name] || false}
+                  checked={checkedModels[model.name] || false}
                   onChange={handleCheckboxChange}
                   className="form-checkbox h-5 w-5 accent-red"
                 />

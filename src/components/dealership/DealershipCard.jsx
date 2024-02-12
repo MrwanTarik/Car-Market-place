@@ -2,21 +2,31 @@ import telephoneGray from "../../assets/icons/telephone-gray.svg";
 import EllipsisText from "react-ellipsis-text";
 import { Link } from "react-router-dom";
 function DealershipCard({
-  dealership: { id, name, description, image, phone, cars },
+  dealership: {
+    id,
+    dealership_name,
+    description,
+    logo_url,
+    phone,
+    number_of_announcment,
+  },
 }) {
   return (
-    <Link to={`/dealership/${id}`} className="xl:col-span-6 col-span-12 rounded-lg shadow-lg">
+    <Link
+      to={`/dealership/${id}`}
+      className="xl:col-span-6 col-span-12 rounded-lg shadow-lg"
+    >
       <div className="flex md:flex-row flex-col items-center md:items-start">
         <div className="max-w-[204px] h-[201px]">
           <img
             className="object-cover w-full h-full md:rounded-l-lg rounded-lg md:rounded-none"
-            src={image}
+            src={logo_url}
             alt="dealership-img"
           />
         </div>
         <div className="p-5 bg-white flex-1 md:border-l md:border-solid rounded-r-lg">
           <h2 className="font-secondary text-[18px] font-bold leading-7 text-primary mb-5">
-            {name}
+            {dealership_name}
           </h2>
           <p className="mb-[12px] font-primary text-secondary text-base font-normal">
             {description}
@@ -52,7 +62,7 @@ function DealershipCard({
             </div>
           </div>
           <p className="mt-[10px] text-link text-[14px] md:text-base font-primary">
-            {cars.length} Announcements
+            {number_of_announcment} Announcements
           </p>
         </div>
       </div>

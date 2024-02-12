@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-function useFetchData(category) {
+function useFetchDealership(category) {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -8,7 +8,7 @@ function useFetchData(category) {
   useEffect(() => {
     async function fetchData() {
       try {
-        const response = await fetch(`http://localhost:3001/${category}`);
+        const response = await fetch(`https://kibcar.com/api/${category}`);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -27,4 +27,4 @@ function useFetchData(category) {
   return { data, loading, error };
 }
 
-export default useFetchData;
+export default useFetchDealership;
