@@ -1,24 +1,38 @@
-import { useRef} from "react";
+import { useRef, useState, useEffect} from "react";
+import axios from "axios";
 import chivronBottom from "../../assets/icons/chivron-bottom.svg";
 import { useContext } from "react";
 import FilterContext from "../../context/filterContext/FilterContext";
 function MaxYearManufacturer() {
   const { selectedMaxYearManufactured, setSelectedMaxYearManufactured } = useContext(FilterContext);
+  const [years, setYears] = useState([]);
+
   const detailsRef = useRef(null);
 
   const handleSelection = (item) => {
-    setSelectedMaxYearManufactured(item);
+    setSelectedMaxYearManufactured(item.name);
     if (detailsRef.current) {
       detailsRef.current.removeAttribute('open');
     }
   };
 
-  const brands = ["Item 1", "Item 2", "Item 3", "Item 4", "Item 5", "Item 6"];
+  useEffect(() => {
+    async function getVehicleYears() {
+      try {
+        const response = await axios.get("http://localhost:8000/api/vehicle-years");
+        setYears(response.data);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    getVehicleYears();
+  }, []);
+
 
   return (
     <div className="h-full">
-      <details ref={detailsRef} className="dropdown w-full h-full">
-        <summary className="btn w-full flex justify-between items-center py-4 px-5 bg-white rounded-lg h-full shadow-input border-none shadow-md">
+      <details ref={detailsRef} className="w-full h-full dropdown">
+        <summary className="flex items-center justify-between w-full h-full px-5 py-4 bg-white border-none rounded-lg shadow-md btn shadow-input">
           <div>
             {selectedMaxYearManufactured && (
               <p className="font-primary mb-1 text-[12px] opacity-70 text-secondary text-start">Max year</p>
@@ -30,9 +44,9 @@ function MaxYearManufacturer() {
           <img src={chivronBottom} alt="chivron-Bottom" />
         </summary>
         <ul className="p-2 shadow menu dropdown-content z-[1] bg-base-100 flex justify-start w-full mt-2 rounded-none rounded-l-lg">
-          {brands.map((item) => (
-            <li key={item} onClick={() => handleSelection(item)}>
-              <a>{item}</a>
+          {years.map((item) => (
+            <li key={item.id} onClick={() => handleSelection(item)}>
+              <a>{item.name}</a>
             </li>
           ))}
         </ul>

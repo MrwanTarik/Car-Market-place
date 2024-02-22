@@ -22,9 +22,9 @@ function CarCard({
   const [heart, setHeart] = useState(false);
   return (
     <Link
-      to={"/car-details"}
+      to={`/car-details/${id}`}
       id={id}
-      className="xl:col-span-3 lg:col-span-4 md:col-span-6 col-span-12"
+      className="col-span-12 xl:col-span-3 lg:col-span-4 md:col-span-6"
     >
       <div className="flex-col bg-white rounded-t-[12px] shadow-md relative">
         <div className="absolute bottom-[20px] left-5 top-[20px] right-5 flex flex-col justify-between">
@@ -40,7 +40,7 @@ function CarCard({
               {heart ? <RedHeartIcon /> : <GrayHeartIcon />}
             </button>
           </div>
-          <div className="flex justify-between items-center">
+          <div className="flex items-center justify-between">
             <Link className="bg-link py-1 px-[6px] w-[56px] font-primary text-base font-normal text-center text-white rounded-md">
               Salon
             </Link>
@@ -65,7 +65,7 @@ function CarCard({
           {`${brand.name} - ${brand_model.name}`}
         </p>
         <p>
-          <span className="font-primary text-primary text-base font-normal">
+          <span className="text-base font-normal font-primary text-primary">
             {`${vehicle_year.name}, ${engine_power} L, ${mileage} km`}{" "}
           </span>
         </p> */}

@@ -1,24 +1,36 @@
-import { useRef } from "react";
+import axios from "axios";
+import { useRef, useState, useEffect } from "react";
 import chivronBottom from "../../assets/icons/chivron-bottom.svg";
 import { useContext } from "react";
 import FilterContext from "../../context/filterContext/FilterContext";
 function VolumeMax() {
+  const [engineVolumes, setEngineVolumes] = useState([]);
   const { selectedVolumeMax, setSelectedVolumeMax } = useContext(FilterContext);
   const detailsRef = useRef(null);
 
   const handleSelection = (item) => {
-    setSelectedVolumeMax(item);
+    setSelectedVolumeMax(item.name);
     if (detailsRef.current) {
       detailsRef.current.removeAttribute('open');
     }
   };
 
-  const brands = ["Item 1", "Item 2", "Item 3", "Item 4", "Item 5", "Item 6"];
+  useEffect(() => {
+    async function getEngineVolumes() {
+      try {
+        const response = await axios.get("http://localhost:8000/api/vehicle-engine-volumes");
+        setEngineVolumes(response.data);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    getEngineVolumes();
+  }, []);
 
   return (
     <div className="h-full">
-      <details ref={detailsRef} className="dropdown w-full h-full">
-        <summary className="btn w-full flex justify-between items-center py-4 px-5 bg-white rounded-lg h-full shadow-input border-none shadow-md">
+      <details ref={detailsRef} className="w-full h-full dropdown">
+        <summary className="flex items-center justify-between w-full h-full px-5 py-4 bg-white border-none rounded-lg shadow-md btn shadow-input">
           <div>
             {selectedVolumeMax && (
               <p className="font-primary mb-1 text-[12px] opacity-70 text-secondary text-start">Max</p>
@@ -30,9 +42,9 @@ function VolumeMax() {
           <img src={chivronBottom} alt="chivron-Bottom" />
         </summary>
         <ul className="p-2 shadow menu dropdown-content z-[1] bg-base-100 flex justify-start w-full mt-2 rounded-none rounded-l-lg">
-          {brands.map((item) => (
-            <li key={item} onClick={() => handleSelection(item)}>
-              <a>{item}</a>
+          {engineVolumes.map((item) => (
+            <li key={item.id} onClick={() => handleSelection(item)}>
+              <a>{item.name}</a>
             </li>
           ))}
         </ul>

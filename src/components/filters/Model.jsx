@@ -4,17 +4,22 @@ import chivronBottom from "../../assets/icons/chivron-bottom.svg";
 import { useContext } from "react";
 import FilterContext from "../../context/filterContext/FilterContext";
 function Model() {
-  const { checkedModels, setCheckedModels, brandId } =
+  const { checkedModels, setCheckedModels, brandId, setCheckedModelsIds } =
     useContext(FilterContext);
   const [models, setModels] = useState([]);
   const detailsRef = useRef(null);
   const initialCheckedModelState = {};
   const handleCheckboxChange = (event) => {
     const item = event.target.name;
+    const modelId = event.target.id;
+
     setCheckedModels((prevItems) => ({
       ...prevItems,
       [item]: !prevItems[item],
     }));
+
+    setCheckedModelsIds((prevItems) => ([...prevItems, modelId]));
+
   };
   const selectedOptions = Object.keys(checkedModels).filter(
     (item) => checkedModels[item]
@@ -26,6 +31,7 @@ function Model() {
   // reseting checkedModels state when brandId changes
   useEffect(() => {
     setCheckedModels(initialCheckedModelState);
+    setCheckedModels([]);
   }, [brandId]);
   // get car models
 
@@ -33,7 +39,7 @@ function Model() {
     async function getModels() {
       try {
         const response = await axios.get(
-          `https://kibcar.com/api/brand-models?brand_id=${brandId.brand}`
+          `http://localhost:8000/api/brand-models?brand_id=${brandId.brand}`
         );
         setModels(response.data);
       } catch (error) {
@@ -44,8 +50,8 @@ function Model() {
   }, [brandId]);
   return (
     <div className="h-full">
-      <details ref={detailsRef} className="dropdown w-full h-full">
-        <summary className="btn w-full flex justify-between items-center py-4 px-5 bg-white rounded-lg h-full shadow-input border-none shadow-md cursor-pointer">
+      <details ref={detailsRef} className="w-full h-full dropdown">
+        <summary className="flex items-center justify-between w-full h-full px-5 py-4 bg-white border-none rounded-lg shadow-md cursor-pointer btn shadow-input">
           <div>
             {selectedOptions.length > 0 && (
               <p className="font-primary mb-1 text-[12px] opacity-70 text-secondary text-start">
@@ -66,9 +72,10 @@ function Model() {
                 <input
                   type="checkbox"
                   name={model.name}
+                  id={model.id}
                   checked={checkedModels[model.name] || false}
                   onChange={handleCheckboxChange}
-                  className="form-checkbox h-5 w-5 accent-red"
+                  className="w-5 h-5 form-checkbox accent-red"
                 />
                 <span className="ml-2 text-secondary font-primary text-[15px]">
                   {model.name}

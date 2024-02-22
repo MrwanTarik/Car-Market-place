@@ -1,10 +1,111 @@
-import { useState } from "react";
+import axios from "axios";
+import { useState, useEffect, useRef } from "react";
 import addMore from "../assets/images/add-more.png";
 import backView from "../assets/images/back-view.png";
 import frontView from "../assets/images/front-view.png";
 import insideView from "../assets/images/inside-view.png";
 import { IoIosClose } from "react-icons/io";
+import PaymentModal from "../components/PaymentModal";
+import OtpModal from "../components/OtpModal";
 function NewAdvertisement() {
+
+  const formRef = useRef(null);
+  const [brands, setBrands] = useState([]);
+  const [brandModels, setBrandModels] = useState([]);
+  const [fuelTypes, setFuelTypes] = useState([]);
+  const [gears, setGears] = useState([]);
+  const [gearBoxs, setGearBoxs] = useState([]);
+  const [years, setYears] = useState([]);
+  const [banTypes, setBanTypes] = useState([]);
+  const [colors, setColors] = useState([]);
+  const [engineVolumes, setEngineVolumes] = useState([]);
+  const [markets, setMarkets] = useState([]);
+  const [owners, setOwners] = useState([]);
+  const [cities, setCities] = useState([]);
+
+
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [showOtpModal, setShowOtpModal] = useState(false);
+  const [paymentStatus, setPaymentStatus] = useState('');
+  const [paymentToken, setPaymentToken] = useState('');
+
+
+
+  const verifyOtp = async (otp) => {
+
+
+    try {
+      const response = await axios.post("http://localhost:8000/api/guests/otp/verify", {
+        otp: otp,
+        phone: formData.userTel
+      });
+      
+      if(response.data.success == true) {
+
+        setShowOtpModal(false)
+
+        formRef.current.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const resendOtp = () => {
+
+  }
+
+
+  const handlePaymentResult = (status) => {
+    console.log(status)
+  };
+
+  useEffect(() => {
+
+    async function getDefaultOptions() {
+      try {
+        const brandsRes = await axios.get("http://localhost:8000/api/brands");
+        setBrands(brandsRes.data);
+
+        const fuelTypesRes = await axios.get("http://localhost:8000/api/fuel-types");
+        setFuelTypes(fuelTypesRes.data);
+
+        const gearsRes = await axios.get("http://localhost:8000/api/gears");
+        setGears(gearsRes.data);
+
+        const gearBoxsRes = await axios.get("http://localhost:8000/api/vehicle-transmissions");
+        setGearBoxs(gearBoxsRes.data);
+
+        const yearsRes = await axios.get("http://localhost:8000/api/vehicle-years");
+        setYears(yearsRes.data);
+
+        const banTypeRes = await axios.get("http://localhost:8000/api/vehicle-categories");
+        setBanTypes(banTypeRes.data);
+
+        const colorsRes = await axios.get("http://localhost:8000/api/vehicle-colors");
+        setColors(colorsRes.data);
+        
+        const ownersRes = await axios.get("http://localhost:8000/api/vehicle-prior-owners");
+        setOwners(ownersRes.data);
+
+        const volumesRes = await axios.get("http://localhost:8000/api/vehicle-engine-volumes");
+        setEngineVolumes(volumesRes.data);
+
+
+        const marketsRes = await axios.get("http://localhost:8000/api/vehicle-markets");
+        setMarkets(marketsRes.data);
+
+        const citiesRes = await axios.get("http://localhost:8000/api/cities");
+        setCities(citiesRes.data);
+
+
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    getDefaultOptions();
+
+  }, [])
   const [formData, setFormData] = useState({
     brand: "",
     fuelType: "",
@@ -47,8 +148,30 @@ function NewAdvertisement() {
     userCity:"",
     userEmail: "",
     userTel: "",
-    uploadedImages:[]
+    uploadedImages:[],
+    vehicle_front_view_image: null,
+    vehicle_back_view_image: null,
+    vehicle_front_panel_image: null,
+
   });
+
+  useEffect(() => {
+
+    async function getModels() {
+      try {
+        const response = await axios.get(
+          `http://localhost:8000/api/brand-models?brand_id=${formData.brand}`
+        );
+        setBrandModels(response.data);
+      } catch (error) {
+        setBrandModels([])
+        console.log(error);
+      }
+    }
+    getModels();
+
+  }, [formData.brand])
+
   function handleChange(e) {
     const { name, value } = e.target;
     setFormData({
@@ -72,6 +195,24 @@ function NewAdvertisement() {
         src: URL.createObjectURL(file),
         flipped: 0,
       };
+
+      
+      const fileblob = URL.createObjectURL(file);
+      const filename = `image_${new Date().getTime()}`;
+
+      if(index == 0 ) {
+
+        formData.vehicle_front_view_image = new File([fileblob], filename, { type: file.type });
+      }else if(index == 1) {
+
+        formData.vehicle_back_view_image = new File([fileblob], filename, { type: file.type });
+
+      }else if (index == 2 ) {
+
+
+        formData.vehicle_front_panel_image = new File([fileblob], filename, { type: file.type });
+
+      }
 
       // Replace or add new uploaded image
       let updatedImages = [...formData.uploadedImages];
@@ -127,7 +268,7 @@ function NewAdvertisement() {
       <img
         src={image.src}
         alt={`Uploaded image ${index}`}
-        className="w-full  h-full object-cover"
+        className="object-cover w-full h-full"
         style={{ transform: `rotate(${image.flipped}deg)` }}
       />
       <div>
@@ -177,7 +318,7 @@ function NewAdvertisement() {
           <img
             src={placeholder}
             alt={`Placeholder ${index}`}
-            className="max-w-full m-auto lg:m-0 h-full object-cover cursor-pointer"
+            className="object-cover h-full max-w-full m-auto cursor-pointer lg:m-0"
             onClick={() =>
               document.getElementById(`file-upload-${index}`).click()
             }
@@ -201,7 +342,7 @@ function NewAdvertisement() {
       <img
         src={addMore}
         alt="Add more"
-        className="max-w-full m-auto lg:m-0 h-full object-cover cursor-pointer"
+        className="object-cover h-full max-w-full m-auto cursor-pointer lg:m-0"
         onClick={() => document.getElementById("file-upload-add-more").click()}
       />
     </div>
@@ -209,11 +350,77 @@ function NewAdvertisement() {
 
   function handleFormSubmit(e) {
     e.preventDefault();
+
+    async function saveAnnouncement() {
+      try {
+
+        const params = {
+            vehicle_category: formData.banType,
+            fuel_type: formData.fuelType,
+            gear: formData.gear,
+            vehicle_transmission: formData.gearBox,
+            vehicle_year: formData.year,
+            vehicle_prior_owner: formData.howManyDoYouOwn,
+            vehicle_status: 1,
+            mileage: formData.march,
+            mileageType: formData.marchNum,
+            vehicle_color: formData.color,
+            price: formData.price,
+            vehicle_engine_volume: formData.engineVolume,
+            engine_power: formData.enginePower,
+            vehicle_market: formData.marketAssembled,
+            number_of_seats: formData.seatNum,
+            loan: formData.credit,
+            barter: formData.barter,
+            is_crashed: formData.hasStroke,
+            is_painted: formData.hasColor,
+            for_spare_parts: formData.needRepair,
+            vin_code: formData.vinCode,
+            additional_information: formData.moreInfo,
+            vehicle_front_view_image: formData.vehicle_front_view_image,
+            vehicle_back_view_image: formData.vehicle_back_view_image,
+            vehicle_front_panel_image: formData.vehicle_front_panel_image,
+            brand_model: formData.model,
+            city: formData.userCity,
+            price_currency: 1,
+            name: formData.userName,
+            email: formData.userEmail,
+            phone: formData.userTel,
+            images: formData.uploadedImages,
+            brand: formData.brand,
+        }
+        const headers = {
+          'Content-Type': 'multipart/form-data',
+        };
+        
+        const response = await axios.post("http://localhost:8000/api/announcements", params, {
+          headers: headers
+        });
+
+        if(response.data.action == "premium") {
+
+          setPaymentToken(response.data.token)
+          setShowPaymentModal(true)
+        }
+
+        if(response.data.action == "otp") {
+
+          setShowOtpModal(true)
+        }
+
+        console.log(response.data)
+
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    saveAnnouncement();
+
     console.log(formData);
   }
   
   return (
-    <form action="" onSubmit={handleFormSubmit}>
+    <form ref={formRef} action="" onSubmit={handleFormSubmit}>
       <div className="container">
         <div className="mt-[30px]">
           <h2 className="uppercase font-secondary text-[26px] font-bold leading-8 text-primary">
@@ -233,7 +440,7 @@ function NewAdvertisement() {
             </li>
           </ul>
           <div className="grid grid-cols-12 gap-[30px]">
-            <div className="md:col-span-6 col-span-12">
+            <div className="col-span-12 md:col-span-6">
               <div className="flex space-y-2 md:space-y-0 md:items-center justify-between md:gap-[50px] md:flex-row flex-col">
                 <label className="font-primary text-[16px] font-normal text-secondary after:content-['*'] after:pl-[3px] after:top-0 after:relative after:text-red  relative ">
                   Brand
@@ -249,32 +456,11 @@ function NewAdvertisement() {
                   <option value="" disabled>
                     Select
                   </option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
+                  {brands.map((item ) => (<option key={item.id} value={item.id}>{item.name}</option>))}
                 </select>
               </div>
             </div>
-            <div className="md:col-span-6 col-span-12">
+            <div className="col-span-12 md:col-span-6">
               <div className="flex space-y-2 md:space-y-0 md:items-center justify-between md:gap-[50px] md:flex-row flex-col">
                 <label className="font-primary text-[16px] font-normal text-secondary after:content-['*'] after:pl-[3px] after:top-0 after:relative after:text-red  relative ">
                   Fuel type
@@ -289,32 +475,11 @@ function NewAdvertisement() {
                   <option value={""} disabled>
                     Select
                   </option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
+                  {fuelTypes.map((item ) => (<option key={item.id} value={item.id}>{item.name}</option>))}
                 </select>
               </div>
             </div>
-            <div className="md:col-span-6 col-span-12">
+            <div className="col-span-12 md:col-span-6">
               <div className="flex space-y-2 md:space-y-0 md:items-center justify-between md:gap-[50px] md:flex-row flex-col">
                 <label className="font-primary text-[16px] font-normal text-secondary after:content-['*'] after:pl-[3px] after:top-0 after:relative after:text-red  relative ">
                   Model
@@ -329,32 +494,11 @@ function NewAdvertisement() {
                   <option value={""} disabled>
                     Select
                   </option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
+                  {brandModels.map((item ) => (<option key={item.id} value={item.id}>{item.name}</option>))}
                 </select>
               </div>
             </div>
-            <div className="md:col-span-6 col-span-12">
+            <div className="col-span-12 md:col-span-6">
               <div className="flex space-y-2 md:space-y-0 md:items-center justify-between md:gap-[50px] md:flex-row flex-col">
                 <label className="font-primary text-[16px] font-normal text-secondary after:content-['*'] after:pl-[3px] after:top-0 after:relative after:text-red  relative ">
                   Gear
@@ -369,32 +513,11 @@ function NewAdvertisement() {
                   <option value={""} disabled>
                     Select
                   </option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
+                  {gears.map((item ) => (<option key={item.id} value={item.id}>{item.name}</option>))}
                 </select>
               </div>
             </div>
-            <div className="md:col-span-6 col-span-12">
+            <div className="col-span-12 md:col-span-6">
               <div className="flex space-y-2 md:space-y-0 md:items-center justify-between md:gap-[50px] md:flex-row flex-col">
                 <label className="font-primary text-[16px] font-normal text-secondary after:content-['*'] after:pl-[3px] after:top-0 after:relative after:text-red  relative ">
                   Ban Type
@@ -409,32 +532,11 @@ function NewAdvertisement() {
                   <option value={""} disabled>
                     Select
                   </option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
+                  {banTypes.map((item ) => (<option key={item.id} value={item.id}>{item.name}</option>))}
                 </select>
               </div>
             </div>
-            <div className="md:col-span-6 col-span-12">
+            <div className="col-span-12 md:col-span-6">
               <div className="flex space-y-2 md:space-y-0 md:items-center justify-between md:gap-[50px] md:flex-row flex-col">
                 <label className="font-primary text-[16px] font-normal text-secondary after:content-['*'] after:pl-[3px] after:top-0 after:relative after:text-red  relative ">
                   Gear Box
@@ -449,35 +551,14 @@ function NewAdvertisement() {
                   <option value="" disabled>
                     Select
                   </option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
+                  {gearBoxs.map((item ) => (<option key={item.id} value={item.id}>{item.name}</option>))}
                 </select>
               </div>
             </div>
-            <div className="md:col-span-6 col-span-12">
+            <div className="col-span-12 md:col-span-6">
               <div className="flex space-y-2 md:space-y-0 md:items-center justify-between md:gap-[50px] md:flex-row flex-col">
                 <label className="font-primary text-[16px] font-normal text-secondary after:content-['*'] after:pl-[3px] after:top-0 after:relative after:text-red  relative ">
-                  Gear Box
+                March
                 </label>
                 <div className="flex items-center justify-between gap-x-8 md:max-w-[452px] w-full">
                   <div className="w-1/2 md:w-auto">
@@ -491,9 +572,9 @@ function NewAdvertisement() {
                     />
                   </div>
                   <div className="md:max-w-[177px] flex space-x-4 items-center w-1/2">
-                    <div className="flex gap-x-2 items-center">
+                    <div className="flex items-center gap-x-2">
                       <input
-                        className="accent-red w-4 h-4"
+                        className="w-4 h-4 accent-red"
                         onChange={handleChange}
                         id="km"
                         type="radio"
@@ -507,9 +588,9 @@ function NewAdvertisement() {
                         km
                       </label>
                     </div>
-                    <div className="flex gap-x-2 items-center">
+                    <div className="flex items-center gap-x-2">
                       <input
-                        className="accent-red w-4 h-4"
+                        className="w-4 h-4 accent-red"
                         onChange={handleChange}
                         id="mi"
                         type="radio"
@@ -527,7 +608,7 @@ function NewAdvertisement() {
                 </div>
               </div>
             </div>
-            <div className="md:col-span-6 col-span-12">
+            <div className="col-span-12 md:col-span-6">
               <div className="flex space-y-2 md:space-y-0 md:items-center justify-between md:gap-[50px] md:flex-row flex-col">
                 <label className="font-primary text-[16px] font-normal text-secondary after:content-['*'] after:pl-[3px] after:top-0 after:relative after:text-red  relative ">
                   Year
@@ -542,32 +623,11 @@ function NewAdvertisement() {
                   <option value={""} disabled>
                     Select
                   </option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
+                  {years.map((item ) => (<option key={item.id} value={item.id}>{item.name}</option>))}
                 </select>
               </div>
             </div>
-            <div className="md:col-span-6 col-span-12">
+            <div className="col-span-12 md:col-span-6">
               <div className="flex space-y-2 md:space-y-0 md:items-center justify-between md:gap-[50px] md:flex-row flex-col">
                 <label className="font-primary text-[16px] font-normal text-secondary after:content-['*'] after:pl-[3px] after:top-0 after:relative after:text-red  relative ">
                   Color
@@ -582,32 +642,11 @@ function NewAdvertisement() {
                   <option value={""} disabled>
                     Select
                   </option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
+                  {colors.map((item ) => (<option key={item.id} value={item.id}>{item.name}</option>))}
                 </select>
               </div>
             </div>
-            <div className="md:col-span-6 col-span-12">
+            <div className="col-span-12 md:col-span-6">
               <div className="flex space-y-2 md:space-y-0 md:items-center justify-between md:gap-[50px] md:flex-row flex-col">
                 <label className="font-primary text-[16px] font-normal text-secondary after:content-['*'] after:pl-[3px] after:top-0 after:relative after:text-red  relative ">
                   Engine volume.cm 3
@@ -622,32 +661,11 @@ function NewAdvertisement() {
                   <option value={""} disabled>
                     Select
                   </option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
+                  {engineVolumes.map((item ) => (<option key={item.id} value={item.id}>{item.name}</option>))}
                 </select>
               </div>
             </div>
-            <div className="md:col-span-6 col-span-12">
+            <div className="col-span-12 md:col-span-6">
               <div className="flex space-y-2 md:space-y-0 md:items-center justify-between md:gap-[50px] md:flex-row flex-col">
                 <label className="font-primary text-[16px] font-normal text-secondary after:content-['*'] after:pl-[3px] after:top-0 after:relative after:text-red  relative ">
                   Price
@@ -664,9 +682,9 @@ function NewAdvertisement() {
                     />
                   </div>
                   <div className="md:max-w-[220px] flex space-x-4 items-center w-1/2">
-                    <div className="flex gap-x-2 items-center">
+                    <div className="flex items-center gap-x-2">
                       <input
-                        className="accent-red w-4 h-4"
+                        className="w-4 h-4 accent-red"
                         onChange={handleChange}
                         id="azn"
                         type="radio"
@@ -680,9 +698,9 @@ function NewAdvertisement() {
                         AZN
                       </label>
                     </div>
-                    <div className="flex gap-x-2 items-center">
+                    <div className="flex items-center gap-x-2">
                       <input
-                        className="accent-red w-4 h-4"
+                        className="w-4 h-4 accent-red"
                         onChange={handleChange}
                         id="usd"
                         type="radio"
@@ -696,9 +714,9 @@ function NewAdvertisement() {
                         USD
                       </label>
                     </div>
-                    <div className="flex gap-x-2 items-center">
+                    <div className="flex items-center gap-x-2">
                       <input
-                        className="accent-red w-4 h-4"
+                        className="w-4 h-4 accent-red"
                         onChange={handleChange}
                         id="eur"
                         type="radio"
@@ -716,47 +734,21 @@ function NewAdvertisement() {
                 </div>
               </div>
             </div>
-            <div className="md:col-span-6 col-span-12">
+            <div className="col-span-12 md:col-span-6">
               <div className="flex space-y-2 md:space-y-0 md:items-center justify-between md:gap-[50px] md:flex-row flex-col">
                 <label className="font-primary text-[16px] font-normal text-secondary after:content-['*'] after:pl-[3px] after:top-0 after:relative after:text-red  relative ">
                   Engine power.ag
                 </label>
-                <select
-                  name="enginePower"
-                  id="enginePower"
-                  className="w-full md:max-w-[452px] py-[10px] px-[15px] bg-white rounded-md border border-solid border-[#E4E4E4] font-primary text-[16px] text-secondary font-normal"
-                  onChange={handleChange}
-                  value={formData.enginePower}
-                >
-                  <option value="" disabled>
-                    Select
-                  </option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                </select>
+                <input className="md:max-w-[452px] w-full py-[10px] px-[15px] bg-white rounded-md border border-solid border-[#E4E4E4] font-primary text-[16px] text-secondary font-normal focus:outline-0" 
+                type="text" 
+                name="enginePower" 
+                id="enginePower" 
+                placeholder="Engine power.ag" 
+                value={formData.enginePower} 
+                onChange={handleChange} />
               </div>
             </div>
-            <div className="md:col-span-6 col-span-12">
+            <div className="col-span-12 md:col-span-6">
               <div className="flex space-y-2 md:space-y-0 md:items-center justify-between md:gap-[50px] md:flex-row flex-col">
                 <label className="font-primary text-[16px] font-normal text-secondary after:content-['*'] after:pl-[3px] after:top-0 after:relative after:text-red  relative ">
                   How many do you own?
@@ -771,32 +763,11 @@ function NewAdvertisement() {
                   <option value="" disabled>
                     Select
                   </option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
+                  {owners.map((item ) => (<option key={item.id} value={item.id}>{item.name}</option>))}
                 </select>
               </div>
             </div>
-            <div className="md:col-span-6 col-span-12">
+            <div className="col-span-12 md:col-span-6">
               <div className="flex space-y-2 md:space-y-0 md:items-center justify-between md:gap-[50px] md:flex-row flex-col">
                 <label className="font-primary text-[16px] font-normal text-secondary after:content-['*'] after:pl-[3px] after:top-0 after:relative after:text-red  relative ">
                   For which market it is assem
@@ -811,32 +782,11 @@ function NewAdvertisement() {
                   <option value="" disabled>
                     Select
                   </option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
-                  <option value="mercedes">Mercedes-Benz</option>
-                  <option value="Kia">Kia</option>
+                  {markets.map((item ) => (<option key={item.id} value={item.id}>{item.name}</option>))}
                 </select>
               </div>
             </div>
-            <div className="md:col-span-6 col-span-12">
+            <div className="col-span-12 md:col-span-6">
               <div className="flex space-y-2 md:space-y-0  justify-between md:gap-[50px] md:flex-row flex-col">
                 <label className="font-primary text-[16px] font-normal text-secondary">
                   The Situation
@@ -896,7 +846,7 @@ function NewAdvertisement() {
                 </div>
               </div>
             </div>
-            <div className="md:col-span-6 col-span-12">
+            <div className="col-span-12 md:col-span-6">
               <div className="flex space-y-2 md:space-y-0  justify-between md:gap-[50px] md:flex-row flex-col ">
                 <label className="font-primary text-[16px] font-normal invisible text-secondary">
                   The Situation
@@ -934,9 +884,9 @@ function NewAdvertisement() {
                   Number of seats
                 </label>
                 <div className="md:flex-nowrap  flex-wrap gap-y-3 md:gap-y-0  md:min-w-[452px] w-full space-x-5 flex md:ml-2">
-                  <div className="flex gap-x-1 items-center">
+                  <div className="flex items-center gap-x-1">
                     <input
-                      className="accent-red w-4 h-4"
+                      className="w-4 h-4 accent-red"
                       id="seatNum1"
                       type="radio"
                       name="seatNum"
@@ -950,9 +900,9 @@ function NewAdvertisement() {
                       1
                     </label>
                   </div>
-                  <div className="flex gap-x-1 items-center">
+                  <div className="flex items-center gap-x-1">
                     <input
-                      className="accent-red w-4 h-4"
+                      className="w-4 h-4 accent-red"
                       id="seatNum2"
                       type="radio"
                       name="seatNum"
@@ -966,9 +916,9 @@ function NewAdvertisement() {
                       2
                     </label>
                   </div>
-                  <div className="flex gap-x-1 items-center">
+                  <div className="flex items-center gap-x-1">
                     <input
-                      className="accent-red w-4 h-4"
+                      className="w-4 h-4 accent-red"
                       id="seatNum3"
                       type="radio"
                       name="seatNum"
@@ -982,9 +932,9 @@ function NewAdvertisement() {
                       3
                     </label>
                   </div>
-                  <div className="flex gap-x-1 items-center">
+                  <div className="flex items-center gap-x-1">
                     <input
-                      className="accent-red w-4 h-4"
+                      className="w-4 h-4 accent-red"
                       id="seatNum4"
                       type="radio"
                       name="seatNum"
@@ -998,9 +948,9 @@ function NewAdvertisement() {
                       4
                     </label>
                   </div>
-                  <div className="flex gap-x-1 items-center">
+                  <div className="flex items-center gap-x-1">
                     <input
-                      className="accent-red w-4 h-4"
+                      className="w-4 h-4 accent-red"
                       id="seatNum5"
                       type="radio"
                       name="seatNum"
@@ -1014,9 +964,9 @@ function NewAdvertisement() {
                       5
                     </label>
                   </div>
-                  <div className="flex gap-x-1 items-center">
+                  <div className="flex items-center gap-x-1">
                     <input
-                      className="accent-red w-4 h-4"
+                      className="w-4 h-4 accent-red"
                       id="seatNum6"
                       type="radio"
                       name="seatNum"
@@ -1030,9 +980,9 @@ function NewAdvertisement() {
                       6
                     </label>
                   </div>
-                  <div className="flex gap-x-1 items-center">
+                  <div className="flex items-center gap-x-1">
                     <input
-                      className="accent-red w-4 h-4"
+                      className="w-4 h-4 accent-red"
                       id="seatNum7"
                       type="radio"
                       name="seatNum"
@@ -1046,9 +996,9 @@ function NewAdvertisement() {
                       7
                     </label>
                   </div>
-                  <div className="flex gap-x-1 items-center">
+                  <div className="flex items-center gap-x-1">
                     <input
-                      className="accent-red w-4 h-4"
+                      className="w-4 h-4 accent-red"
                       id="seatNum8"
                       type="radio"
                       name="seatNum"
@@ -1062,9 +1012,9 @@ function NewAdvertisement() {
                       8
                     </label>
                   </div>
-                  <div className="flex gap-x-1 ml-0  items-center">
+                  <div className="flex items-center ml-0 gap-x-1">
                     <input
-                      className="accent-red w-4 h-4"
+                      className="w-4 h-4 accent-red"
                       id="seatNum8"
                       type="radio"
                       name="seatVal"
@@ -1081,7 +1031,7 @@ function NewAdvertisement() {
                 </div>
               </div>
             </div>
-            <div className="md:col-span-6 col-span-12">
+            <div className="col-span-12 md:col-span-6">
               <div className="flex space-y-2 md:space-y-0 md:items-center justify-between md:gap-[50px] md:flex-row flex-col">
                 <label className="font-primary text-[16px] font-normal text-secondary  "></label>
                 <div className="md:max-w-[452px] w-full space-x-5 flex md:ml-2">
@@ -1133,7 +1083,7 @@ function NewAdvertisement() {
             </div>
           </div>
           <div className="grid grid-cols-12 gap-[30px] mt-[80px]">
-            <div className="md:col-span-6 col-span-12">
+            <div className="col-span-12 md:col-span-6">
               <div className="flex space-y-2 md:space-y-0 md:items-center justify-between md:gap-[50px] md:flex-row flex-col">
                 <label className="font-primary text-[16px] font-normal text-secondary">
                   VIN code
@@ -1173,7 +1123,7 @@ function NewAdvertisement() {
             <div className="grid grid-cols-12 gap-y-5">
               <div className="xl:col-span-3 lg:col-span-4 col-span-6 space-y-[10px]">
                 <div className="mt-[2px] flex items-center space-x-[10px]">
-                  <label className="custom-checkbox flex items-center ">
+                  <label className="flex items-center custom-checkbox ">
                     <input
                       checked={formData.alloyWheels}
                       onChange={handleCheckboxChange}
@@ -1186,7 +1136,7 @@ function NewAdvertisement() {
                   <label htmlFor="alloyWheels">Alloy wheels</label>
                 </div>
                 <div className="mt-[2px] flex items-center space-x-[10px]">
-                  <label className="custom-checkbox flex items-center ">
+                  <label className="flex items-center custom-checkbox ">
                     <input
                       checked={formData.centralLocking}
                       onChange={handleCheckboxChange}
@@ -1199,7 +1149,7 @@ function NewAdvertisement() {
                   <label htmlFor="centralLocking">Central locking</label>
                 </div>
                 <div className="mt-[2px] flex items-center space-x-[10px]">
-                  <label className="custom-checkbox flex items-center ">
+                  <label className="flex items-center custom-checkbox ">
                     <input
                       checked={formData.leatherSalon}
                       onChange={handleCheckboxChange}
@@ -1212,7 +1162,7 @@ function NewAdvertisement() {
                   <label htmlFor="leatherSalon">Leather salon</label>
                 </div>
                 <div className="mt-[2px] flex items-center space-x-[10px]">
-                  <label className="custom-checkbox flex items-center ">
+                  <label className="flex items-center custom-checkbox ">
                     <input
                       checked={formData.seatVentilation}
                       onChange={handleCheckboxChange}
@@ -1227,7 +1177,7 @@ function NewAdvertisement() {
               </div>
               <div className="xl:col-span-3 lg:col-span-4 col-span-6 space-y-[10px]">
                 <div className="mt-[2px] flex items-center space-x-[10px]">
-                  <label className="custom-checkbox flex items-center ">
+                  <label className="flex items-center custom-checkbox ">
                     <input
                       checked={formData.usa}
                       onChange={handleCheckboxChange}
@@ -1240,7 +1190,7 @@ function NewAdvertisement() {
                   <label htmlFor="usa">USA</label>
                 </div>
                 <div className="mt-[2px] flex items-center space-x-[10px]">
-                  <label className="custom-checkbox flex items-center ">
+                  <label className="flex items-center custom-checkbox ">
                     <input
                       checked={formData.parkingRadar}
                       onChange={handleCheckboxChange}
@@ -1253,7 +1203,7 @@ function NewAdvertisement() {
                   <label htmlFor="parkingRadar">Parking radar</label>
                 </div>
                 <div className="mt-[2px] flex items-center space-x-[10px]">
-                  <label className="custom-checkbox flex items-center ">
+                  <label className="flex items-center custom-checkbox ">
                     <input
                       checked={formData.xenonLamps}
                       onChange={handleCheckboxChange}
@@ -1268,7 +1218,7 @@ function NewAdvertisement() {
               </div>
               <div className="xl:col-span-3 lg:col-span-4 col-span-6 space-y-[10px]">
                 <div className="mt-[2px] flex items-center space-x-[10px]">
-                  <label className="custom-checkbox flex items-center ">
+                  <label className="flex items-center custom-checkbox ">
                     <input
                       checked={formData.hatch}
                       onChange={handleCheckboxChange}
@@ -1281,7 +1231,7 @@ function NewAdvertisement() {
                   <label htmlFor="hatch">Hatch</label>
                 </div>
                 <div className="mt-[2px] flex items-center space-x-[10px]">
-                  <label className="custom-checkbox flex items-center ">
+                  <label className="flex items-center custom-checkbox ">
                     <input
                       checked={formData.airConditioning}
                       onChange={handleCheckboxChange}
@@ -1294,7 +1244,7 @@ function NewAdvertisement() {
                   <label htmlFor="airConditioning">Air conditioning</label>
                 </div>
                 <div className="mt-[2px] flex items-center space-x-[10px]">
-                  <label className="custom-checkbox flex items-center ">
+                  <label className="flex items-center custom-checkbox ">
                     <input
                       checked={formData.nearViewCamera}
                       onChange={handleCheckboxChange}
@@ -1309,7 +1259,7 @@ function NewAdvertisement() {
               </div>
               <div className="xl:col-span-3 lg:col-span-4 col-span-6 space-y-[10px]">
                 <div className="mt-[2px] flex items-center space-x-[10px]">
-                  <label className="custom-checkbox flex items-center ">
+                  <label className="flex items-center custom-checkbox ">
                     <input
                       checked={formData.rainSensor}
                       onChange={handleCheckboxChange}
@@ -1322,7 +1272,7 @@ function NewAdvertisement() {
                   <label htmlFor="rainSensor">Rain sensor</label>
                 </div>
                 <div className="mt-[2px] flex items-center space-x-[10px]">
-                  <label className="custom-checkbox flex items-center ">
+                  <label className="flex items-center custom-checkbox ">
                     <input
                       checked={formData.seatHeating}
                       onChange={handleCheckboxChange}
@@ -1335,7 +1285,7 @@ function NewAdvertisement() {
                   <label htmlFor="seatHeating">Seat heating</label>
                 </div>
                 <div className="mt-[2px] flex items-center space-x-[10px]">
-                  <label className="custom-checkbox flex items-center ">
+                  <label className="flex items-center custom-checkbox ">
                     <input
                       checked={formData.sideCurtains}
                       onChange={handleCheckboxChange}
@@ -1360,7 +1310,7 @@ function NewAdvertisement() {
                       Minimum – 3 pictures (front, back and whole front panel
                       image is mandatory).
                     </p>
-                    <ul className="flex picture-list text-secondary pl-8 flex-col lg:gap-y-7 gap-y-4">
+                    <ul className="flex flex-col pl-8 picture-list text-secondary lg:gap-y-7 gap-y-4">
                       <li>- Maximum – 21 images.</li>
                       <li>- Optimal size – 1024x768 pixels.</li>
                     </ul>
@@ -1373,13 +1323,13 @@ function NewAdvertisement() {
             </div>
           </div>
           <div className="grid grid-cols-12 gap-[30px] mt-[80px]">
-            <div className="lg:col-span-6 col-span-12">
+            <div className="col-span-12 lg:col-span-6">
               <ul className="flex flex-col gap-y-[30px] picture-list ml-5">
                 <li>Photos must be taken in the territory of the Republic of Azerbaijan</li>
                 <li>Photos must be of good quality. The vehicle should be well-lit, there should be no logos and other inscriptions on the pictures. Screenshots are not accepted.</li>
               </ul>
             </div>
-            <div className="lg:col-span-6 col-span-12">
+            <div className="col-span-12 lg:col-span-6">
               <ul className="flex flex-col gap-y-[30px] picture-list ml-5 lg:ml-0 ">
                 <li>Photos taken at the dealership must be uploaded from the registered dealership's account.</li>
                 <li>A vehicle sold by a private owner must not be photographed in or near the showroom/official service area.</li>
@@ -1393,24 +1343,21 @@ function NewAdvertisement() {
           </h2>
           <p className="mt-[10px] font-primary text-secondary">No changes are made to the contact details after the advertisement is published.</p>
           <div className="mt-[80px] flex flex-col gap-y-[30px]">
-          <div className="flex md:flex-row flex-col md:items-center items-start gap-y-3">
+          <div className="flex flex-col items-start md:flex-row md:items-center gap-y-3">
               <label className="md:min-w-[244px] md:max-w-[244px] w-full" htmlFor="yourName">Your Name</label>
               <input className="md:max-w-[452px] w-full py-[10px] px-[15px] bg-white rounded-md border border-solid border-[#E4E4E4] font-primary text-[16px] text-secondary font-normal focus:outline-0" type="text" name="userName" id="yourName" placeholder="Enter Your Name" value={formData.name} onChange={handleChange} />
             </div>
-            <div className="flex md:flex-row flex-col md:items-center items-start">
+            <div className="flex flex-col items-start md:flex-row md:items-center">
               <label className="md:min-w-[244px] md:max-w-[244px] w-full" htmlFor="userCity">City</label>
               <select className="md:max-w-[452px] w-full py-[10px] px-[15px] bg-white rounded-md border border-solid border-[#E4E4E4] font-primary text-[16px] text-secondary font-normal focus:outline-0" name="userCity" id="userCity" placeholder="Enter Your City" value={formData.userCity} onChange={handleChange} >
-              <option value="Cairo" >Cairo</option>
-              <option value="Alex" >Alex</option>
-              <option value="Fayoum" >Fayoum</option>
-              <option value="Zayed" >Zayed</option>
+              {cities.map((item ) => (<option key={item.id} value={item.id}>{item.name}</option>))}
               </select>
             </div>
-            <div className="flex md:flex-row flex-col md:items-center items-start gap-y-3">
+            <div className="flex flex-col items-start md:flex-row md:items-center gap-y-3">
               <label className="md:min-w-[244px] md:max-w-[244px] w-full" htmlFor="userEmail">E-mail</label>
               <input className="md:max-w-[452px] w-full py-[10px] px-[15px] bg-white rounded-md border border-solid border-[#E4E4E4] font-primary text-[16px] text-secondary font-normal focus:outline-0" type="Email" name="userEmail" id="userEmail" placeholder="moniruiux@gamil.com" value={formData.userEmail} onChange={handleChange} />
             </div>
-            <div className="flex md:flex-row flex-col md:items-center items-start gap-y-3">
+            <div className="flex flex-col items-start md:flex-row md:items-center gap-y-3">
               <label className="md:min-w-[244px] md:max-w-[244px] w-full" htmlFor="userTel">Mobile Number</label>
               <input className="md:max-w-[452px] w-full py-[10px] px-[15px] bg-white rounded-md border border-solid border-[#E4E4E4] font-primary text-[16px] text-secondary font-normal focus:outline-0" type="tel" name="userTel" id="userTel" placeholder="014656+546566+654" value={formData.userTel} onChange={handleChange} />
             </div>
@@ -1422,6 +1369,21 @@ function NewAdvertisement() {
           </div>
         </div>
       </div>
+      {showPaymentModal && (
+        <PaymentModal
+          token={paymentToken}
+          onClose={() => setShowPaymentModal(false)}
+          onPaymentResult={handlePaymentResult}
+        />
+      )}
+
+      {showOtpModal && (
+        <OtpModal
+          verifyOtp={verifyOtp}
+          resendOtp={resendOtp}
+          onClose={() => setShowOtpModal(false)}
+        />
+      )}
     </form>
   );
 }

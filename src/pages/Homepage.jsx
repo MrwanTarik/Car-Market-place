@@ -1,3 +1,5 @@
+import axios from "axios";
+import { useState, useEffect } from "react";
 import Brand from "../components/filters/Brand";
 import City from "../components/filters/City";
 import Model from "../components/filters/Model";
@@ -29,9 +31,97 @@ import FilterContext from "../context/filterContext/FilterContext";
 import VipAnnouncement from "../components/cars/VipAnnouncement";
 import RecentAnnouncement from "../components/cars/RecentAnnouncement"
 import PremiumAds from "../components/cars/PremiumAds";
+import VehicleFeatures from "../components/cars/VehicleFeatures";
 function Homepage() {
-  const { newAds, moreFilters, handleMoreFilters, setPaymentOptions } =
-    useContext(FilterContext);
+
+  const [premiumAds, setPremiumAds] = useState([])
+  const [ads, setAds] = useState([])
+  const [adsCount, setAdsCount] = useState(0)
+
+
+  const { 
+      newAds, 
+      moreFilters, 
+      handleMoreFilters, 
+      setPaymentOptions, 
+    } = useContext(FilterContext);
+
+    const filterContextData = useContext(FilterContext);
+
+
+    useEffect(() => {
+
+      async function getAds() {
+        try {
+          const response = await axios.get("http://localhost:8000/api/announcements/filter");
+          setPremiumAds(response.data.premiumAnnouncements);
+          setAds(response.data.announcements);
+          setAdsCount(response.data.announcementsCount + response.data.premiumAnnouncementsCount)
+        } catch (error) {
+          console.log(error);
+        }
+      }
+      getAds();
+
+    }, [])
+
+    const showFilterPayload = async () => {
+
+      try {
+        const data = {
+            barter: filterContextData.paymentOptions.barter,
+            brand: filterContextData.brandId?.brand,
+            min_price: filterContextData.minPrice,
+            max_price: filterContextData.maxPrice,
+            brand_model: filterContextData.checkedModelsIds,
+            city: filterContextData.checkedCityIds, // Todo: Uncomment or remove this line based on your requirement
+            fuel_type: filterContextData.checkedFuelTypeIds,
+            is_crashed: filterContextData.paymentOptions.noPunctuation ? !filterContextData.paymentOptions.noPunctuation : null,
+            is_painted: filterContextData.paymentOptions.notColored ? !filterContextData.paymentOptions.notColored : null,
+            for_spare_parts: filterContextData.paymentOptions.accidentalCars,
+            gear: filterContextData.checkedGearIds,
+            loan: filterContextData.paymentOptions.credit,
+            max_engine_power: filterContextData.maxPower,
+            min_engine_power: filterContextData.minPower,
+            max_mileage: filterContextData.maxMileage,
+            min_mileage: filterContextData.minMileage,
+            max_vehicle_engine_volume: filterContextData.selectedVolumeMax,
+            min_vehicle_engine_volume: filterContextData.selectedVolumeMin,
+            max_vehicle_year: filterContextData.selectedMaxYearManufactured,
+            min_vehicle_year: filterContextData.selectedYearManufactured,
+            number_of_seats: filterContextData.checkedSeatsNumberIds,
+            price_currency: filterContextData.selectedCurrency,
+            vehicle_category: filterContextData.checkedBanTypeIds,
+            vehicle_color: filterContextData.checkedColorIds,
+            vehicle_market: filterContextData.checkedMarketAssembledIds,
+            vehicle_prior_owner: filterContextData.checkedOwnersNumberIds,
+            vehicle_status: filterContextData.selectedType,
+            vehicle_transmission: filterContextData.checkedGearBoxIds,
+            ownership_type: filterContextData.selectedCarType,
+            features: filterContextData.featuresIds
+        };
+      
+        const config = {
+            method: 'GET',
+            url: 'http://localhost:8000/api/announcements/filter',
+            params: data
+        };
+        
+        axios(config)
+            .then(function (response) {
+              setPremiumAds(response.data.premiumAnnouncements);
+              setAds(response.data.announcements);
+              setAdsCount(response.data.announcementsCount + response.data.premiumAnnouncementsCount)
+                console.log(JSON.stringify(response.data));
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+        } catch (error) {
+          console.log(error);
+        }
+    }
+  
   return (
     <main className="container mt-[30px]">
       <form action="" onSubmit={(e) => e.preventDefault()}>
@@ -52,7 +142,7 @@ function Homepage() {
             <Price />
           </div>
           <div className="xl:col-span-3 lg:col-span-4 md:col-span-6 col-span-12 h-[60px]">
-            <div className="flex h-full justify-between ">
+            <div className="flex justify-between h-full ">
               <PaymentCurrency />
               <PaymentType
                 label="Credit"
@@ -72,7 +162,7 @@ function Homepage() {
             <BanType />
           </div>
           <div className="xl:col-span-3 lg:col-span-4 md:col-span-6 col-span-12 h-[60px]">
-            <div className="flex h-full justify-between gap-6">
+            <div className="flex justify-between h-full gap-6">
               <div className="flex-1">
                 <YearManufacturer />
               </div>
@@ -100,7 +190,7 @@ function Homepage() {
             <GearBox />
           </div>
           <div className="xl:col-span-4 md:col-span-6 col-span-12 h-[60px]">
-            <div className="flex h-full justify-between gap-6">
+            <div className="flex justify-between h-full gap-6">
               <div className="flex-1">
                 <VolumeMin />
               </div>
@@ -148,108 +238,28 @@ function Homepage() {
             />
           </div>
           <div className="col-span-12 mt-12">
-            <div className="flex justify-between items-center">
+            <div className="flex items-center justify-between">
               <span className="font-primary text-primary text-[16px] inline-block min-w-[130px]">
                 Vehicle supply
               </span>
               <hr className="h-[1px] w-full bg-[#e2e2e2]" />
             </div>
           </div>
-          <div className="col-span-12">
-            <div className="flex gap-x-[30px] flex-wrap gap-y-4 ">
-              <PaymentType
-                label="Alloy wheels"
-                type="alloyWheels"
-                name="alloyWheels"
-                setPaymentOptions={setPaymentOptions}
-              />
-              <PaymentType
-                label="USA"
-                type="usa"
-                name="usa"
-                setPaymentOptions={setPaymentOptions}
-              />
-              <PaymentType
-                label="Hatch"
-                type="hatch"
-                name="hatch"
-                setPaymentOptions={setPaymentOptions}
-              />
-              <PaymentType
-                label="Rain sensor"
-                type="rainSensor"
-                name="rainSensor"
-                setPaymentOptions={setPaymentOptions}
-              />
-              <PaymentType
-                label="Central locking"
-                type="centralLocking"
-                name="centralLocking"
-                setPaymentOptions={setPaymentOptions}
-              />
-              <PaymentType
-                label="Parking radar"
-                type="parkingRadar"
-                name="parkingRadar"
-                setPaymentOptions={setPaymentOptions}
-              />
-              <PaymentType
-                label="Air conditioning"
-                type="airConditioning"
-                name="airConditioning"
-                setPaymentOptions={setPaymentOptions}
-              />
-              <PaymentType
-                label="Seat heating"
-                type="seatHeating"
-                name="seatHeating"
-                setPaymentOptions={setPaymentOptions}
-              />
-              <PaymentType
-                label="Leather salon"
-                type="leatherSalon"
-                name="leatherSalon"
-                setPaymentOptions={setPaymentOptions}
-              />
-              <PaymentType
-                label="Xenon lamps"
-                type="xenonLamps"
-                name="xenonLamps"
-                setPaymentOptions={setPaymentOptions}
-              />
-              <PaymentType
-                label="Rear view camera"
-                type="rearViewCamera"
-                name="rearViewCamera"
-                setPaymentOptions={setPaymentOptions}
-              />
-              <PaymentType
-                label="Side curtains"
-                type="sideCurtains"
-                name="sideCurtains"
-                setPaymentOptions={setPaymentOptions}
-              />
-              <PaymentType
-                label="Rain Seat ventilationsensor"
-                type="rainSeatVentilationSensor"
-                name="rainSeatVentilationSensor"
-                setPaymentOptions={setPaymentOptions}
-              />
-            </div>
-          </div>
+          <VehicleFeatures />
+        
         </div>
         <div className="grid grid-cols-12 gap-[30px]">
           <div className="col-span-12  mt-[70px] ">
-            <div className="flex justify-between items-center flex-wrap md:flex-nowrap md:gy-0 gap-y-4 ">
+            <div className="flex flex-wrap items-center justify-between md:flex-nowrap md:gy-0 gap-y-4 ">
               <span className="font-primary text-primary text-[16px] inline-block ">
                 <h2 className="flex items-center font-bold text-primary text-[14px] md:text-[16px] font-primary">
                   Today :{" "}
-                  <Link className="font-primary text-link ml-1">
-                    {newAds} new ads
+                  <Link className="ml-1 font-primary text-link">
+                    {adsCount} Ads
                   </Link>
                 </h2>
               </span>
-              <div className="flex items-center flex-wrap md:flex-nowrap md:gy-0 gap-y-4  ">
+              <div className="flex flex-wrap items-center md:flex-nowrap md:gy-0 gap-y-4 ">
                 <div className="flex items-center">
                   <button className="color-red font-primary text-[16px] font-normal mr-7">
                     Rest
@@ -267,7 +277,7 @@ function Homepage() {
                   </button>
                 </div>
                 <div>
-                  <button className="text-white rounded-md shadow-lg bg-red py-[14px] px-[20px] font-primary text-[16px] font-medium md:ml-14 ml-[20px] flex items-center ">
+                  <button  onClick={showFilterPayload} className="text-white rounded-md shadow-lg bg-red py-[14px] px-[20px] font-primary text-[16px] font-medium md:ml-14 ml-[20px] flex items-center ">
                     <img
                       className="mr-[10px]"
                       src={notifiedIcon}
@@ -281,9 +291,11 @@ function Homepage() {
           </div>
         </div>
       </form>
-      <VipAnnouncement />
-      <RecentAnnouncement />
-      <PremiumAds />
+      {premiumAds.length > 0 && <VipAnnouncement announcements={premiumAds} title={'Premium Announcements'} />}
+      {ads.length && <VipAnnouncement announcements={ads} title={'Announcements'} />}
+
+      {/* {ads && <RecentAnnouncement announcements={ads} />} */}
+      {/* {premiumAds && <PremiumAds premiumAds={premiumAds} />} */}
     </main>
   );
 }

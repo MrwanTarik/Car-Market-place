@@ -7,29 +7,33 @@ function PaymentCurrency() {
   const detailsRef = useRef(null);
 
   const handleSelection = (item) => {
-    setSelectedCurrency(item);
+    setSelectedCurrency(item.name);
     if (detailsRef.current) {
       detailsRef.current.removeAttribute("open");
     }
   };
 
-  const brands = ["Item 1", "Item 2", "Item 3", "Item 4", "Item 5", "Item 6"];
+  const currencies = [
+    {id: 1, name: 'USD'},
+    {id: 2, name: 'EUR'},
+    {id: 3, name: 'TR'},
+  ];
 
   return (
     <div className="h-full">
-      <details ref={detailsRef} className="dropdown w-full h-full">
-        <summary className="btn w-full flex justify-between items-center py-4 px-5 bg-white rounded-lg h-full shadow-input border-none shadow-md">
+      <details ref={detailsRef} className="w-full h-full dropdown">
+        <summary className="flex items-center justify-between w-full h-full px-5 py-4 bg-white border-none rounded-lg shadow-md btn shadow-input">
           <div>
             <p className="font-primary text-[16px] font-normal">
-              {selectedCurrency || "AZN"}
+              {selectedCurrency || "Currency"}
             </p>
           </div>
           <img src={chivronBottom} alt="chivron-Bottom" />
         </summary>
         <ul className="p-2 shadow menu dropdown-content z-[1] bg-base-100 flex justify-start w-full mt-2 rounded-none rounded-l-lg">
-          {brands.map((item) => (
-            <li key={item} onClick={() => handleSelection(item)}>
-              <a>{item}</a>
+          {currencies.map((item) => (
+            <li key={item.id} onClick={() => handleSelection(item)}>
+              <a>{item.name}</a>
             </li>
           ))}
         </ul>

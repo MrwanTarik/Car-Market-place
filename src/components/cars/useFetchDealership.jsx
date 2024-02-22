@@ -8,7 +8,7 @@ function useFetchDealership(category) {
   useEffect(() => {
     async function fetchData() {
       try {
-        const response = await fetch(`https://kibcar.com/api/${category}`);
+        const response = await fetch(`http://localhost:8000/api/${category}`);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }

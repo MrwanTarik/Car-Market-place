@@ -28,7 +28,7 @@ function App() {
             <Route path="/help" element={<Faq />} />
             <Route path="/favourite" element={<Favourite />} />
             <Route path="/new-advertisement" element={<NewAdvertisement />} />
-            <Route path="/car-details" element={<CarDetails />} />
+            <Route path="/car-details/:id" element={<CarDetails />} />
           </Routes>
         </Suspense>
         <Footer />

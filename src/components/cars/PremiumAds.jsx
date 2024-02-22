@@ -11,14 +11,14 @@ function PremiumAds() {
         PREMIUM ADS
       </h1>
       <div className="grid grid-cols-12 mt-[72px] gap-[30px] ">
-        <div className="xl:col-span-3 lg:col-span-4 md:col-span-6 col-span-12">
+        <div className="col-span-12 xl:col-span-3 lg:col-span-4 md:col-span-6">
           <PremiumCard />
         </div>
 
         {data.map((car) => (
             <CarCard key={car.id} car={car} />
         ))}
-        <div className="xl:col-span-3 lg:col-span-4 md:col-span-6 col-span-12">
+        <div className="col-span-12 xl:col-span-3 lg:col-span-4 md:col-span-6">
           <PremiumCard />
         </div>
       </div>

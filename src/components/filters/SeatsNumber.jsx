@@ -1,33 +1,38 @@
-import { useRef } from "react";
+import axios from "axios";
+import { useRef, useState, useEffect } from "react";
 import chivronBottom from "../../assets/icons/chivron-bottom.svg";
 import { useContext } from "react";
 import FilterContext from "../../context/filterContext/FilterContext";
 function SeatsNumber() {
-  const { checkedSeatsNumber, setCheckedSeatsNumber } = useContext(FilterContext);
+  const [seatNumbers, setSeatNumbers] = useState([]);
+  const { checkedSeatsNumber, setCheckedSeatsNumber, setCheckedSeatsNumberIds } = useContext(FilterContext);
   const detailsRef = useRef(null);
 
   const handleCheckboxChange = (event) => {
     const item = event.target.name;
+    const itemId = event.target.id;
+
     setCheckedSeatsNumber((prevItems) => ({
       ...prevItems,
       [item]: !prevItems[item],
     }));
+
+    setCheckedSeatsNumberIds((prevItems) => ([...prevItems, itemId]));
+
   };
-  const options = [
-    "Option 1",
-    "Option 2",
-    "Option 3",
-    "Option 4",
-    "Option 5",
-    "Option 6",
-    "Option 7",
-    "Option 8",
-    "Option 9",
-    "Option 10",
-    "Option 11",
-    "Option 12",
-    "Option 13",
-  ];
+
+  useEffect(() => {
+    async function getSeatsNumber() {
+      try {
+        const response = await axios.get("https://kibcar.com/api/gears");
+        setSeatNumbers(response.data);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    getSeatsNumber();
+  }, []);
+
   const selectedOptions = Object.keys(checkedSeatsNumber).filter(
     (item) => checkedSeatsNumber[item]
   );
@@ -37,8 +42,8 @@ function SeatsNumber() {
 
   return (
     <div className="h-full">
-      <details ref={detailsRef} className="dropdown w-full h-full">
-        <summary className="btn w-full flex justify-between items-center py-4 px-5 bg-white rounded-lg h-full shadow-input border-none shadow-md cursor-pointer">
+      <details ref={detailsRef} className="w-full h-full dropdown">
+        <summary className="flex items-center justify-between w-full h-full px-5 py-4 bg-white border-none rounded-lg shadow-md cursor-pointer btn shadow-input">
           <div>
             {SeatsNumber && (
               <p className="font-primary mb-1 text-[12px] opacity-70 text-secondary text-start">
@@ -53,18 +58,18 @@ function SeatsNumber() {
         </summary>
 
         <ul className="p-2 z-[1] shadow menu dropdown-content bg-base-100 flex flex-col flex-nowrap justify-start w-full mt-2 rounded-lg max-h-[210px] overflow-y-auto">
-          {options.map((item) => (
-            <li key={item} className="flex items-center">
+          {seatNumbers.map((item) => (
+            <li key={item.id} className="flex items-center">
               <label className="flex items-center w-full px-2 py-1 text-secondary font-primary">
                 <input
                   type="checkbox"
-                  name={item}
-                  checked={checkedSeatsNumber[item] || false}
+                  name={item.name}
+                  checked={checkedSeatsNumber[item.name] || false}
                   onChange={handleCheckboxChange}
-                  className="form-checkbox h-5 w-5 accent-red"
+                  className="w-5 h-5 form-checkbox accent-red"
                 />
                 <span className="ml-2 text-secondary font-primary text-[15px]">
-                  {item}
+                  {item.name}
                 </span>
               </label>
             </li>
