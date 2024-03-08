@@ -53,7 +53,7 @@ function CarDetails() {
   const { id } = useParams();
 
   const [car, setCar] = useState(null);
-  
+  const [carImages, setCarImages] = useState([]);
   useEffect(() => {
     async function getCar() {
       try {
@@ -61,6 +61,29 @@ function CarDetails() {
           `http://localhost:8000/api/announcements/${id}`
         );
         setCar(response.data.data)
+        const featuredImagesArr = [
+          {
+            original: response.data.data.vehicle_front_view_image,
+            thumbnail: response.data.data.vehicle_front_view_image,
+          },
+          {
+            original: response.data.data.vehicle_front_panel_image,
+            thumbnail: response.data.data.vehicle_front_panel_image,
+          },
+          {
+            original: response.data.data.vehicle_back_view_image,
+            thumbnail: response.data.data.vehicle_back_view_image,
+          },
+        ];
+
+        const ImagesArr = response.data.data.images.map(function (img) {
+            return {
+              original: img.path,
+              thumbnail: img.path,
+            }
+        })
+
+        setCarImages([...featuredImagesArr, ...ImagesArr]);
         console.log(response.data)
       } catch (error) {
         console.log(error);
@@ -111,10 +134,10 @@ function CarDetails() {
           </div>
           <div className="flex lg:flex-row flex-col mt-[40px] md:mt-[60px] justify-between items-start lg:gap-x-[30px] lg:g-y-0 gap-y-8">
             <div className="lg:w-[67%] w-full">
-              <ImageGallery infinite={true} showPlayButton={false} autoPlay={true} slideDuration={500} swipingTransitionDuration={100} showNav={false} slideInterval={3000} items={images} />
+              <ImageGallery infinite={true} showPlayButton={false} autoPlay={true} slideDuration={500} swipingTransitionDuration={100} showNav={false} slideInterval={3000} items={carImages} />
               <ul className="pt-[20px] pb-[20px] picture-list pl-[20px] border-b border-solid border-[#E2E2E2]">
-                <li>Updated: 21.01.2023</li>
-                <li>Views: 73580</li>
+                <li>Updated: {car.updated_date}</li>
+                {/* <li>Views: 73580</li> */}
               </ul>
               <div className="grid grid-cols-12 pb-[12px] border-b border-solid border-[#E2E2E2]">
                 <div className="col-span-6 md:col-span-6 xl:col-span-3 mt-[30px]">
