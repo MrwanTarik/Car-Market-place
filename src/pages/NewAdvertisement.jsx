@@ -26,6 +26,7 @@ function NewAdvertisement() {
   const [showOtpModal, setShowOtpModal] = useState(false);
   const [paymentStatus, setPaymentStatus] = useState("");
   const [paymentToken, setPaymentToken] = useState("");
+  const [PictureErrorMsg, setPictureErrorMsg] = useState("");
 
   const verifyOtp = async (otp) => {
     try {
@@ -151,7 +152,7 @@ function NewAdvertisement() {
     seatHeating: false,
     sideCurtains: false,
     userName: "",
-    userCity: "",
+    userCity: "1",
     userEmail: "",
     userTel: "",
     uploadedImages: [],
@@ -190,7 +191,19 @@ function NewAdvertisement() {
     });
   }
   const placeholderImages = [frontView, backView, insideView];
+  function validateImageCount(uploadedImages) {
+    const minImages = 3;
+    const maxImages = 21;
+    const numberOfUploadedImages = uploadedImages.length;
 
+    if (numberOfUploadedImages < minImages) {
+      return `Please upload at least ${minImages} images.`;
+    } else if (numberOfUploadedImages > maxImages) {
+      return `You can only upload up to ${maxImages} images.`;
+    }
+
+    return ""; // No error
+  }
   const handleImageUpload = (event, index) => {
     if (event.target.files && event.target.files[0]) {
       const file = event.target.files[0];
@@ -358,7 +371,6 @@ function NewAdvertisement() {
 
   function handleFormSubmit(e) {
     e.preventDefault();
-
     async function saveAnnouncement() {
       try {
         const params = {
@@ -422,9 +434,19 @@ function NewAdvertisement() {
         console.log(error);
       }
     }
-    saveAnnouncement();
-
-    console.log(formData);
+    const errorMessage = validateImageCount(formData.uploadedImages);
+    const picSection = document.getElementById("picturesSection");
+    const errorMsg = document.getElementById("error");
+    if (errorMessage) {
+      setPictureErrorMsg(errorMessage);
+      errorMsg.classList.remove("hidden");
+      picSection.scrollIntoView({ behavior: "smooth" });
+      return; // Stop the request from being sent
+    } else {
+      errorMsg.classList.add("hidden");
+      saveAnnouncement();
+      console.log(formData);
+    }
   }
 
   return (
@@ -460,6 +482,7 @@ function NewAdvertisement() {
                   onChange={handleChange}
                   value={formData.brand}
                   placeholder="Select brand"
+                  required
                 >
                   <option value="" disabled>
                     Select
@@ -483,6 +506,7 @@ function NewAdvertisement() {
                   className="w-full md:max-w-[452px] py-[10px] px-[15px] bg-white rounded-md border border-solid border-[#E4E4E4] font-primary text-[16px] text-secondary font-normal"
                   onChange={handleChange}
                   value={formData.fuelType}
+                  required
                 >
                   <option value={""} disabled>
                     Select
@@ -506,6 +530,7 @@ function NewAdvertisement() {
                   className="w-full md:max-w-[452px] py-[10px] px-[15px] bg-white rounded-md border border-solid border-[#E4E4E4] font-primary text-[16px] text-secondary font-normal"
                   onChange={handleChange}
                   value={formData.model}
+                  required
                 >
                   <option value={""} disabled>
                     Select
@@ -529,6 +554,7 @@ function NewAdvertisement() {
                   className="w-full md:max-w-[452px] py-[10px] px-[15px] bg-white rounded-md border border-solid border-[#E4E4E4] font-primary text-[16px] text-secondary font-normal"
                   onChange={handleChange}
                   value={formData.gear}
+                  required
                 >
                   <option value={""} disabled>
                     Select
@@ -552,6 +578,7 @@ function NewAdvertisement() {
                   className="w-full md:max-w-[452px] py-[10px] px-[15px] bg-white rounded-md border border-solid border-[#E4E4E4] font-primary text-[16px] text-secondary font-normal"
                   onChange={handleChange}
                   value={formData.banType}
+                  required
                 >
                   <option value={""} disabled>
                     Select
@@ -575,6 +602,7 @@ function NewAdvertisement() {
                   className="w-full md:max-w-[452px] py-[10px] px-[15px] bg-white rounded-md border border-solid border-[#E4E4E4] font-primary text-[16px] text-secondary font-normal"
                   onChange={handleChange}
                   value={formData.gearBox}
+                  required
                 >
                   <option value="" disabled>
                     Select
@@ -601,11 +629,13 @@ function NewAdvertisement() {
                       className="w-full py-[10px] px-[15px] bg-white rounded-md border border-solid border-[#E4E4E4] font-primary text-[16px] text-secondary font-normal"
                       onChange={handleChange}
                       value={formData.march}
+                      required
                     />
                   </div>
                   <div className="md:max-w-[177px] flex space-x-4 items-center w-1/2">
                     <div className="flex items-center gap-x-2">
                       <input
+                        required
                         className="w-4 h-4 accent-red"
                         onChange={handleChange}
                         id="km"
@@ -622,6 +652,7 @@ function NewAdvertisement() {
                     </div>
                     <div className="flex items-center gap-x-2">
                       <input
+                        required
                         className="w-4 h-4 accent-red"
                         onChange={handleChange}
                         id="mi"
@@ -651,6 +682,7 @@ function NewAdvertisement() {
                   className="w-full md:max-w-[452px] py-[10px] px-[15px] bg-white rounded-md border border-solid border-[#E4E4E4] font-primary text-[16px] text-secondary font-normal"
                   onChange={handleChange}
                   value={formData.year}
+                  required
                 >
                   <option value={""} disabled>
                     Select
@@ -674,6 +706,7 @@ function NewAdvertisement() {
                   className="w-full md:max-w-[452px] py-[10px] px-[15px] bg-white rounded-md border border-solid border-[#E4E4E4] font-primary text-[16px] text-secondary font-normal"
                   onChange={handleChange}
                   value={formData.color}
+                  required
                 >
                   <option value={""} disabled>
                     Select
@@ -697,6 +730,7 @@ function NewAdvertisement() {
                   className="w-full md:max-w-[452px] py-[10px] px-[15px] bg-white rounded-md border border-solid border-[#E4E4E4] font-primary text-[16px] text-secondary font-normal"
                   onChange={handleChange}
                   value={formData.engineVolume}
+                  required
                 >
                   <option value={""} disabled>
                     Select
@@ -723,6 +757,7 @@ function NewAdvertisement() {
                       className="w-full py-[10px] px-[15px] bg-white rounded-md border border-solid border-[#E4E4E4] font-primary text-[16px] text-secondary font-normal"
                       onChange={handleChange}
                       value={formData.price}
+                      required
                     />
                   </div>
                   <div className="md:max-w-[220px] flex space-x-4 items-center w-1/2">
@@ -734,6 +769,7 @@ function NewAdvertisement() {
                         type="radio"
                         name="currencyValue"
                         value="azn"
+                        required
                       />
                       <label
                         className="text-[16px] font-secondary"
@@ -750,6 +786,7 @@ function NewAdvertisement() {
                         type="radio"
                         name="currencyValue"
                         value="usd"
+                        required
                       />
                       <label
                         className="text-[16px] font-secondary"
@@ -766,6 +803,7 @@ function NewAdvertisement() {
                         type="radio"
                         name="currencyValue"
                         value="eur"
+                        required
                       />
                       <label
                         className="text-[16px] font-secondary"
@@ -785,12 +823,13 @@ function NewAdvertisement() {
                 </label>
                 <input
                   className="md:max-w-[452px] w-full py-[10px] px-[15px] bg-white rounded-md border border-solid border-[#E4E4E4] font-primary text-[16px] text-secondary font-normal focus:outline-0"
-                  type="text"
+                  type="number"
                   name="enginePower"
                   id="enginePower"
                   placeholder="Engine power.ag"
                   value={formData.enginePower}
                   onChange={handleChange}
+                  required
                 />
               </div>
             </div>
@@ -805,6 +844,7 @@ function NewAdvertisement() {
                   className="w-full md:max-w-[452px] py-[10px] px-[15px] bg-white rounded-md border border-solid border-[#E4E4E4] font-primary text-[16px] text-secondary font-normal"
                   onChange={handleChange}
                   value={formData.howManyDoYouOwn}
+                  required
                 >
                   <option value="" disabled>
                     Select
@@ -828,6 +868,7 @@ function NewAdvertisement() {
                   className="w-full md:max-w-[452px] py-[10px] px-[15px] bg-white rounded-md border border-solid border-[#E4E4E4] font-primary text-[16px] text-secondary font-normal"
                   onChange={handleChange}
                   value={formData.marketAssembled}
+                  required
                 >
                   <option value="" disabled>
                     Select
@@ -946,6 +987,7 @@ function NewAdvertisement() {
                       name="seatNum"
                       value="1"
                       onChange={handleChange}
+                      required
                     />
                     <label
                       className="text-[16px] font-normal text-primary"
@@ -962,6 +1004,7 @@ function NewAdvertisement() {
                       name="seatNum"
                       value="2"
                       onChange={handleChange}
+                      required
                     />
                     <label
                       className="text-[16px] font-normal text-primary"
@@ -978,6 +1021,7 @@ function NewAdvertisement() {
                       name="seatNum"
                       value="3"
                       onChange={handleChange}
+                      required
                     />
                     <label
                       className="text-[16px] font-normal text-primary"
@@ -994,6 +1038,7 @@ function NewAdvertisement() {
                       name="seatNum"
                       value="4"
                       onChange={handleChange}
+                      required
                     />
                     <label
                       className="text-[16px] font-normal text-primary"
@@ -1010,6 +1055,7 @@ function NewAdvertisement() {
                       name="seatNum"
                       value="5"
                       onChange={handleChange}
+                      required
                     />
                     <label
                       className="text-[16px] font-normal text-primary"
@@ -1026,6 +1072,7 @@ function NewAdvertisement() {
                       name="seatNum"
                       value="6"
                       onChange={handleChange}
+                      required
                     />
                     <label
                       className="text-[16px] font-normal text-primary"
@@ -1042,6 +1089,7 @@ function NewAdvertisement() {
                       name="seatNum"
                       value="7"
                       onChange={handleChange}
+                      required
                     />
                     <label
                       className="text-[16px] font-normal text-primary"
@@ -1058,6 +1106,7 @@ function NewAdvertisement() {
                       name="seatNum"
                       value="8"
                       onChange={handleChange}
+                      required
                     />
                     <label
                       className="text-[16px] font-normal text-primary"
@@ -1071,9 +1120,10 @@ function NewAdvertisement() {
                       className="w-4 h-4 accent-red"
                       id="seatNum8"
                       type="radio"
-                      name="seatVal"
-                      value="Don’t be mentioned"
+                      name="seatNum"
+                      value="0"
                       onChange={handleChange}
+                      required
                     />
                     <label
                       className="text-[16px] font-normal  text-primary"
@@ -1149,6 +1199,7 @@ function NewAdvertisement() {
                   id="vinCode"
                   className="w-full focus:outline-0 md:max-w-[452px] py-[10px] px-[15px] bg-white rounded-md border border-solid border-[#E4E4E4] font-primary text-[16px] text-secondary font-normal"
                   onChange={handleChange}
+                  required
                 />
               </div>
             </div>
@@ -1353,11 +1404,17 @@ function NewAdvertisement() {
                 </div>
               </div>
             </div>
-            <div className="grid grid-cols-12">
+            <div id="picturesSection" className="grid grid-cols-12">
               <div className="col-span-12">
                 <h2 className="uppercase mt-[110px] mb-[30px] font-secondary text-[26px] font-bold leading-8 text-primary">
                   Pictures
                 </h2>
+                <p
+                  id="error"
+                  className="font-secondary text-[14px] font-bold leading-8 text-red hidden"
+                >
+                  {PictureErrorMsg}
+                </p>
                 <div className="p-[30px] flex lg:flex-row flex-col lg:gap-x-14 gap-y-4 lg:gap-y-0 border-dashed border border-link">
                   <div className="lg:max-w-[424px] lg:min-w-[424px] flex flex-col lg:gap-y-7 gap-y-4">
                     <p className="text-[16px] font-primary text-secondary">
@@ -1428,6 +1485,7 @@ function NewAdvertisement() {
                     placeholder="Enter Your Name"
                     value={formData.name}
                     onChange={handleChange}
+                    required
                   />
                 </div>
                 <div className="flex flex-col items-start md:flex-row md:items-center">
@@ -1444,6 +1502,7 @@ function NewAdvertisement() {
                     placeholder="Enter Your City"
                     value={formData.userCity}
                     onChange={handleChange}
+                    required
                   >
                     {cities.map((item) => (
                       <option key={item.id} value={item.id}>
@@ -1467,6 +1526,7 @@ function NewAdvertisement() {
                     placeholder="moniruiux@gamil.com"
                     value={formData.userEmail}
                     onChange={handleChange}
+                    required
                   />
                 </div>
                 <div className="flex flex-col items-start md:flex-row md:items-center gap-y-3">
@@ -1483,7 +1543,10 @@ function NewAdvertisement() {
                     id="userTel"
                     placeholder="014656+546566+654"
                     value={formData.userTel}
+                    maxLength="15"
+                    minLength="10"
                     onChange={handleChange}
+                    required
                   />
                 </div>
                 <div className="max-w-[700px] mt-30 flex justify-end">
