@@ -5,7 +5,11 @@ import { useContext } from "react";
 import FilterContext from "../../context/filterContext/FilterContext";
 function SeatsNumber() {
   const [seatNumbers, setSeatNumbers] = useState([]);
-  const { checkedSeatsNumber, setCheckedSeatsNumber, setCheckedSeatsNumberIds } = useContext(FilterContext);
+  const {
+    checkedSeatsNumber,
+    setCheckedSeatsNumber,
+    setCheckedSeatsNumberIds,
+  } = useContext(FilterContext);
   const detailsRef = useRef(null);
 
   const handleCheckboxChange = (event) => {
@@ -16,9 +20,13 @@ function SeatsNumber() {
       ...prevItems,
       [item]: !prevItems[item],
     }));
-
-    setCheckedSeatsNumberIds((prevItems) => ([...prevItems, itemId]));
-
+    setCheckedSeatsNumberIds((prevItems) => {
+      if (prevItems.includes(itemId)) {
+        return prevItems.filter((item) => item !== itemId);
+      } else {
+        return [...prevItems, itemId];
+      }
+    });
   };
 
   useEffect(() => {
@@ -38,7 +46,9 @@ function SeatsNumber() {
   );
 
   const summaryText =
-    selectedOptions.length === 0 ? "Number of Seats" : selectedOptions.join(", ");
+    selectedOptions.length === 0
+      ? "Number of Seats"
+      : selectedOptions.join(", ");
 
   return (
     <div className="h-full">
@@ -50,10 +60,11 @@ function SeatsNumber() {
                 Number of Seats
               </p>
             )}
-            <p className="font-primary text-[16px] font-normal text-start ">{summaryText}</p>
+            <p className="font-primary text-[16px] font-normal text-start ">
+              {summaryText}
+            </p>
           </div>
 
-          
           <img src={chivronBottom} alt="chivron-Bottom" />
         </summary>
 
@@ -64,6 +75,7 @@ function SeatsNumber() {
                 <input
                   type="checkbox"
                   name={item.name}
+                  id={item.id}
                   checked={checkedSeatsNumber[item.name] || false}
                   onChange={handleCheckboxChange}
                   className="w-5 h-5 form-checkbox accent-red"

@@ -49,7 +49,6 @@ const images = [
   },
 ];
 function CarDetails() {
-
   const { id } = useParams();
 
   const [car, setCar] = useState(null);
@@ -58,9 +57,9 @@ function CarDetails() {
     async function getCar() {
       try {
         const response = await axios.get(
-          `http://localhost:8000/api/announcements/${id}`
+          `https://kibcar.com/api/announcements/${id}`
         );
-        setCar(response.data.data)
+        setCar(response.data.data);
         const featuredImagesArr = [
           {
             original: response.data.data.vehicle_front_view_image,
@@ -77,36 +76,36 @@ function CarDetails() {
         ];
 
         const ImagesArr = response.data.data.images.map(function (img) {
-            return {
-              original: img.path,
-              thumbnail: img.path,
-            }
-        })
+          return {
+            original: img.path,
+            thumbnail: img.path,
+          };
+        });
 
         setCarImages([...featuredImagesArr, ...ImagesArr]);
-        console.log(response.data)
+        console.log(response.data);
       } catch (error) {
         console.log(error);
       }
     }
     getCar();
-  }, [id])
+  }, [id]);
   const [heart, setHeart] = useState(false);
   const [complain, setComplain] = useState(false);
   const [number, setNumber] = useState(false);
 
-  
-  if(car) {
+  if (car) {
     return (
       <div>
         <div className="container">
           <p className="font-primary font-medium leading-7 pb-[20px] border-b border-solid border-[#E2E2E2] uppercase text-[17px] mt-[56px] text-secondary">
-          {/* Car dealerships . autolux azerbaijan - */}
-             {car.brand.name} . {car.brand.name} . {car.brand_model.name}
+            {/* Car dealerships . autolux azerbaijan - */}
+            {car.brand.name} . {car.brand.name} . {car.brand_model.name}
           </p>
           <div className="flex md:flex-row flex-col gap-y-4 md:gap-y-0  items-center justify-between mt-[30px] ">
             <h2 className="text-[#505050] text-center md:text-start text-[26px] font-secondary font-bold leading-8">
-              {car.brand.name} {car.brand_model.name}, 2.3 L , {car.vehicle_year.name} year , {car.vehicle_status}
+              {car.brand.name} {car.brand_model.name}, 2.3 L ,{" "}
+              {car.vehicle_year.name} year , {car.vehicle_status}
             </h2>
             <div className="flex items-center gap-x-[30px]">
               <Link
@@ -134,7 +133,16 @@ function CarDetails() {
           </div>
           <div className="flex lg:flex-row flex-col mt-[40px] md:mt-[60px] justify-between items-start lg:gap-x-[30px] lg:g-y-0 gap-y-8">
             <div className="lg:w-[67%] w-full">
-              <ImageGallery infinite={true} showPlayButton={false} autoPlay={true} slideDuration={500} swipingTransitionDuration={100} showNav={false} slideInterval={3000} items={carImages} />
+              <ImageGallery
+                infinite={true}
+                showPlayButton={false}
+                autoPlay={true}
+                slideDuration={500}
+                swipingTransitionDuration={100}
+                showNav={false}
+                slideInterval={3000}
+                items={carImages}
+              />
               <ul className="pt-[20px] pb-[20px] picture-list pl-[20px] border-b border-solid border-[#E2E2E2]">
                 <li>Updated: {car.updated_date}</li>
                 {/* <li>Views: 73580</li> */}
@@ -192,7 +200,6 @@ function CarDetails() {
                     <p className="font-primary text-[16px] text-secondary">
                       {/* 2.3 L/130 hp/Diesel */}
                       {car.fuel_type.name}
-                      
                     </p>
                     <p className="font-primary text-[16px] text-secondary">
                       {car.mileage} km
@@ -220,7 +227,9 @@ function CarDetails() {
                     <p className="font-primary text-[16px] text-secondary">
                       {car.vehicle_transmission.name}
                     </p>
-                    <p className="font-primary text-[16px] text-secondary">Yes</p>
+                    <p className="font-primary text-[16px] text-secondary">
+                      Yes
+                    </p>
                   </div>
                 </div>
               </div>
@@ -239,8 +248,8 @@ function CarDetails() {
                   Alloy wheels / Continental 215/75/R16
                 </p>
                 <p className="font-primary text-secondary text-[16px] mb-[20px]">
-                  - A loan of up to 4 years is possible for individuals and legal
-                  entities
+                  - A loan of up to 4 years is possible for individuals and
+                  legal entities
                 </p>
                 <Link
                   className="font-primary text-[16px] font-normal text-link pb-[20px] mb-[10px] border-b border-solid border-[#E2E2E2]"
@@ -267,17 +276,23 @@ function CarDetails() {
                 </div>
                 <div className="flex items-center justify-between mt-[20px]">
                   <div className="flex gap-x-[20px]">
-                    <Link className="font-primary text-[16px] underline text-secondary">Correct it</Link>
-                    <Link className="font-primary text-[16px] underline text-secondary">Delete the ad</Link>
+                    <Link className="font-primary text-[16px] underline text-secondary">
+                      Correct it
+                    </Link>
+                    <Link className="font-primary text-[16px] underline text-secondary">
+                      Delete the ad
+                    </Link>
                   </div>
-                  <p className="font-primary text-[16px] underline text-secondary">Ad number: 5733263</p>
+                  <p className="font-primary text-[16px] underline text-secondary">
+                    Ad number: 5733263
+                  </p>
                 </div>
               </div>
             </div>
             <div className="flex-1 w-full ">
               <div className="bg-[#F6F7FA] p-[30px] w-full">
                 <h2 className="font-secondary pb-[20px] border-b border-solid border-[#e2e2e2] mb-[32px] text-[26px] font-bold leading-8 text-primary ">
-                  { car.price} { car.price_currency}
+                  {car.price} {car.price_currency}
                 </h2>
                 <div className="p-[20px] gap-x-5 flex">
                   <img
@@ -381,7 +396,11 @@ function CarDetails() {
                       From 3 AZN
                     </span>
                   </div>
-                  <img className="w-4 h-4" src={premiumIcon} alt="premiumIcon" />
+                  <img
+                    className="w-4 h-4"
+                    src={premiumIcon}
+                    alt="premiumIcon"
+                  />
                 </Link>
               </div>
             </div>

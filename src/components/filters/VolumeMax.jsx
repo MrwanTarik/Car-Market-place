@@ -11,14 +11,16 @@ function VolumeMax() {
   const handleSelection = (item) => {
     setSelectedVolumeMax(item.name);
     if (detailsRef.current) {
-      detailsRef.current.removeAttribute('open');
+      detailsRef.current.removeAttribute("open");
     }
   };
 
   useEffect(() => {
     async function getEngineVolumes() {
       try {
-        const response = await axios.get("http://localhost:8000/api/vehicle-engine-volumes");
+        const response = await axios.get(
+          "https://kibcar.com/api/vehicle-engine-volumes"
+        );
         setEngineVolumes(response.data);
       } catch (error) {
         console.log(error);
@@ -33,7 +35,9 @@ function VolumeMax() {
         <summary className="flex items-center justify-between w-full h-full px-5 py-4 bg-white border-none rounded-lg shadow-md btn shadow-input">
           <div>
             {selectedVolumeMax && (
-              <p className="font-primary mb-1 text-[12px] opacity-70 text-secondary text-start">Max</p>
+              <p className="font-primary mb-1 text-[12px] opacity-70 text-secondary text-start">
+                Max
+              </p>
             )}
             <p className="font-primary text-[16px] font-normal">
               {selectedVolumeMax || "Max"}

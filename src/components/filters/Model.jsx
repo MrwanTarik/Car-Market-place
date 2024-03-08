@@ -17,9 +17,13 @@ function Model() {
       ...prevItems,
       [item]: !prevItems[item],
     }));
-
-    setCheckedModelsIds((prevItems) => ([...prevItems, modelId]));
-
+    setCheckedModelsIds((prevItems) => {
+      if (prevItems.includes(modelId)) {
+        return prevItems.filter((item) => item !== modelId);
+      } else {
+        return [...prevItems, modelId];
+      }
+    });
   };
   const selectedOptions = Object.keys(checkedModels).filter(
     (item) => checkedModels[item]
@@ -39,7 +43,7 @@ function Model() {
     async function getModels() {
       try {
         const response = await axios.get(
-          `http://localhost:8000/api/brand-models?brand_id=${brandId.brand}`
+          `https://kibcar.com/api/brand-models?brand_id=${brandId.brand}`
         );
         setModels(response.data);
       } catch (error) {

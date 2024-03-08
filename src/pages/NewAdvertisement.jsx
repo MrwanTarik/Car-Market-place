@@ -8,7 +8,6 @@ import { IoIosClose } from "react-icons/io";
 import PaymentModal from "../components/PaymentModal";
 import OtpModal from "../components/OtpModal";
 function NewAdvertisement() {
-
   const formRef = useRef(null);
   const [brands, setBrands] = useState([]);
   const [brandModels, setBrandModels] = useState([]);
@@ -23,89 +22,96 @@ function NewAdvertisement() {
   const [owners, setOwners] = useState([]);
   const [cities, setCities] = useState([]);
 
-
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [showOtpModal, setShowOtpModal] = useState(false);
-  const [paymentStatus, setPaymentStatus] = useState('');
-  const [paymentToken, setPaymentToken] = useState('');
-
-
+  const [paymentStatus, setPaymentStatus] = useState("");
+  const [paymentToken, setPaymentToken] = useState("");
 
   const verifyOtp = async (otp) => {
-
-
     try {
-      const response = await axios.post("http://localhost:8000/api/guests/otp/verify", {
-        otp: otp,
-        phone: formData.userTel
-      });
-      
-      if(response.data.success == true) {
+      const response = await axios.post(
+        "https://kibcar.com/api/guests/otp/verify",
+        {
+          otp: otp,
+          phone: formData.userTel,
+        }
+      );
 
-        setShowOtpModal(false)
+      if (response.data.success == true) {
+        setShowOtpModal(false);
 
-        formRef.current.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+        formRef.current.dispatchEvent(
+          new Event("submit", { cancelable: true, bubbles: true })
+        );
       }
     } catch (error) {
       console.log(error);
     }
-  }
+  };
 
-  const resendOtp = () => {
-
-  }
-
+  const resendOtp = () => {};
 
   const handlePaymentResult = (status) => {
-    console.log(status)
+    console.log(status);
   };
 
   useEffect(() => {
-
     async function getDefaultOptions() {
       try {
-        const brandsRes = await axios.get("http://localhost:8000/api/brands");
+        const brandsRes = await axios.get("https://kibcar.com/api/brands");
         setBrands(brandsRes.data);
 
-        const fuelTypesRes = await axios.get("http://localhost:8000/api/fuel-types");
+        const fuelTypesRes = await axios.get(
+          "https://kibcar.com/api/fuel-types"
+        );
         setFuelTypes(fuelTypesRes.data);
 
-        const gearsRes = await axios.get("http://localhost:8000/api/gears");
+        const gearsRes = await axios.get("https://kibcar.com/api/gears");
         setGears(gearsRes.data);
 
-        const gearBoxsRes = await axios.get("http://localhost:8000/api/vehicle-transmissions");
+        const gearBoxsRes = await axios.get(
+          "https://kibcar.com/api/vehicle-transmissions"
+        );
         setGearBoxs(gearBoxsRes.data);
 
-        const yearsRes = await axios.get("http://localhost:8000/api/vehicle-years");
+        const yearsRes = await axios.get(
+          "https://kibcar.com/api/vehicle-years"
+        );
         setYears(yearsRes.data);
 
-        const banTypeRes = await axios.get("http://localhost:8000/api/vehicle-categories");
+        const banTypeRes = await axios.get(
+          "https://kibcar.com/api/vehicle-categories"
+        );
         setBanTypes(banTypeRes.data);
 
-        const colorsRes = await axios.get("http://localhost:8000/api/vehicle-colors");
+        const colorsRes = await axios.get(
+          "https://kibcar.com/api/vehicle-colors"
+        );
         setColors(colorsRes.data);
-        
-        const ownersRes = await axios.get("http://localhost:8000/api/vehicle-prior-owners");
+
+        const ownersRes = await axios.get(
+          "https://kibcar.com/api/vehicle-prior-owners"
+        );
         setOwners(ownersRes.data);
 
-        const volumesRes = await axios.get("http://localhost:8000/api/vehicle-engine-volumes");
+        const volumesRes = await axios.get(
+          "https://kibcar.com/api/vehicle-engine-volumes"
+        );
         setEngineVolumes(volumesRes.data);
 
-
-        const marketsRes = await axios.get("http://localhost:8000/api/vehicle-markets");
+        const marketsRes = await axios.get(
+          "https://kibcar.com/api/vehicle-markets"
+        );
         setMarkets(marketsRes.data);
 
-        const citiesRes = await axios.get("http://localhost:8000/api/cities");
+        const citiesRes = await axios.get("https://kibcar.com/api/cities");
         setCities(citiesRes.data);
-
-
       } catch (error) {
         console.log(error);
       }
     }
     getDefaultOptions();
-
-  }, [])
+  }, []);
   const [formData, setFormData] = useState({
     brand: "",
     fuelType: "",
@@ -145,32 +151,29 @@ function NewAdvertisement() {
     seatHeating: false,
     sideCurtains: false,
     userName: "",
-    userCity:"",
+    userCity: "",
     userEmail: "",
     userTel: "",
-    uploadedImages:[],
+    uploadedImages: [],
     vehicle_front_view_image: null,
     vehicle_back_view_image: null,
     vehicle_front_panel_image: null,
-
   });
 
   useEffect(() => {
-
     async function getModels() {
       try {
         const response = await axios.get(
-          `http://localhost:8000/api/brand-models?brand_id=${formData.brand}`
+          `https://kibcar.com/api/brand-models?brand_id=${formData.brand}`
         );
         setBrandModels(response.data);
       } catch (error) {
-        setBrandModels([])
+        setBrandModels([]);
         console.log(error);
       }
     }
     getModels();
-
-  }, [formData.brand])
+  }, [formData.brand]);
 
   function handleChange(e) {
     const { name, value } = e.target;
@@ -196,22 +199,21 @@ function NewAdvertisement() {
         flipped: 0,
       };
 
-      
       const fileblob = URL.createObjectURL(file);
       const filename = `image_${new Date().getTime()}`;
 
-      if(index == 0 ) {
-
-        formData.vehicle_front_view_image = new File([fileblob], filename, { type: file.type });
-      }else if(index == 1) {
-
-        formData.vehicle_back_view_image = new File([fileblob], filename, { type: file.type });
-
-      }else if (index == 2 ) {
-
-
-        formData.vehicle_front_panel_image = new File([fileblob], filename, { type: file.type });
-
+      if (index == 0) {
+        formData.vehicle_front_view_image = new File([fileblob], filename, {
+          type: file.type,
+        });
+      } else if (index == 1) {
+        formData.vehicle_back_view_image = new File([fileblob], filename, {
+          type: file.type,
+        });
+      } else if (index == 2) {
+        formData.vehicle_front_panel_image = new File([fileblob], filename, {
+          type: file.type,
+        });
       }
 
       // Replace or add new uploaded image
@@ -219,7 +221,7 @@ function NewAdvertisement() {
       updatedImages[index] = newImage;
       setFormData({
         ...formData,
-        uploadedImages: updatedImages
+        uploadedImages: updatedImages,
       });
     }
   };
@@ -233,7 +235,7 @@ function NewAdvertisement() {
       }));
       setFormData({
         ...formData,
-        uploadedImages: [...formData.uploadedImages, ...newImages]
+        uploadedImages: [...formData.uploadedImages, ...newImages],
       });
     }
   };
@@ -247,24 +249,27 @@ function NewAdvertisement() {
           }
         : img
     );
-  
+
     setFormData({
       ...formData,
-      uploadedImages: updatedImages
+      uploadedImages: updatedImages,
     });
   };
-  
+
   const removeImage = (index) => {
     const updatedImages = formData.uploadedImages.filter((_, i) => i !== index);
-  
+
     setFormData({
       ...formData,
-      uploadedImages: updatedImages
+      uploadedImages: updatedImages,
     });
   };
 
   const imageSlots = formData.uploadedImages.map((image, index) => (
-    <div key={index} className="md:w-[48%] lg:w-[23%] w-full h-[180px] inline-block m-2">
+    <div
+      key={index}
+      className="md:w-[48%] lg:w-[23%] w-full h-[180px] inline-block m-2"
+    >
       <img
         src={image.src}
         alt={`Uploaded image ${index}`}
@@ -330,7 +335,10 @@ function NewAdvertisement() {
 
   // Always show the "Add More" button
   imageSlots.push(
-    <div key="add-more" className="relative  md:w-[48%] w-full lg:w-[23%] h-[180px] inline-block m-2">
+    <div
+      key="add-more"
+      className="relative  md:w-[48%] w-full lg:w-[23%] h-[180px] inline-block m-2"
+    >
       <input
         type="file"
         id="file-upload-add-more"
@@ -353,63 +361,63 @@ function NewAdvertisement() {
 
     async function saveAnnouncement() {
       try {
-
         const params = {
-            vehicle_category: formData.banType,
-            fuel_type: formData.fuelType,
-            gear: formData.gear,
-            vehicle_transmission: formData.gearBox,
-            vehicle_year: formData.year,
-            vehicle_prior_owner: formData.howManyDoYouOwn,
-            vehicle_status: 1,
-            mileage: formData.march,
-            mileageType: formData.marchNum,
-            vehicle_color: formData.color,
-            price: formData.price,
-            vehicle_engine_volume: formData.engineVolume,
-            engine_power: formData.enginePower,
-            vehicle_market: formData.marketAssembled,
-            number_of_seats: formData.seatNum,
-            loan: formData.credit,
-            barter: formData.barter,
-            is_crashed: formData.hasStroke,
-            is_painted: formData.hasColor,
-            for_spare_parts: formData.needRepair,
-            vin_code: formData.vinCode,
-            additional_information: formData.moreInfo,
-            vehicle_front_view_image: formData.vehicle_front_view_image,
-            vehicle_back_view_image: formData.vehicle_back_view_image,
-            vehicle_front_panel_image: formData.vehicle_front_panel_image,
-            brand_model: formData.model,
-            city: formData.userCity,
-            price_currency: 1,
-            name: formData.userName,
-            email: formData.userEmail,
-            phone: formData.userTel,
-            images: formData.uploadedImages,
-            brand: formData.brand,
-        }
-        const headers = {
-          'Content-Type': 'multipart/form-data',
+          vehicle_category: formData.banType,
+          fuel_type: formData.fuelType,
+          gear: formData.gear,
+          vehicle_transmission: formData.gearBox,
+          vehicle_year: formData.year,
+          vehicle_prior_owner: formData.howManyDoYouOwn,
+          vehicle_status: 1,
+          mileage: formData.march,
+          mileageType: formData.marchNum,
+          vehicle_color: formData.color,
+          price: formData.price,
+          vehicle_engine_volume: formData.engineVolume,
+          engine_power: formData.enginePower,
+          vehicle_market: formData.marketAssembled,
+          number_of_seats: formData.seatNum,
+          loan: formData.credit,
+          barter: formData.barter,
+          is_crashed: formData.hasStroke,
+          is_painted: formData.hasColor,
+          for_spare_parts: formData.needRepair,
+          vin_code: formData.vinCode,
+          additional_information: formData.moreInfo,
+          vehicle_front_view_image: formData.vehicle_front_view_image,
+          vehicle_back_view_image: formData.vehicle_back_view_image,
+          vehicle_front_panel_image: formData.vehicle_front_panel_image,
+          brand_model: formData.model,
+          city: formData.userCity,
+          price_currency: 1,
+          name: formData.userName,
+          email: formData.userEmail,
+          phone: formData.userTel,
+          images: formData.uploadedImages,
+          brand: formData.brand,
         };
-        
-        const response = await axios.post("http://localhost:8000/api/announcements", params, {
-          headers: headers
-        });
+        const headers = {
+          "Content-Type": "multipart/form-data",
+        };
 
-        if(response.data.action == "premium") {
+        const response = await axios.post(
+          "https://kibcar.com/api/announcements",
+          params,
+          {
+            headers: headers,
+          }
+        );
 
-          setPaymentToken(response.data.token)
-          setShowPaymentModal(true)
+        if (response.data.action == "premium") {
+          setPaymentToken(response.data.token);
+          setShowPaymentModal(true);
         }
 
-        if(response.data.action == "otp") {
-
-          setShowOtpModal(true)
+        if (response.data.action == "otp") {
+          setShowOtpModal(true);
         }
 
-        console.log(response.data)
-
+        console.log(response.data);
       } catch (error) {
         console.log(error);
       }
@@ -418,7 +426,7 @@ function NewAdvertisement() {
 
     console.log(formData);
   }
-  
+
   return (
     <form ref={formRef} action="" onSubmit={handleFormSubmit}>
       <div className="container">
@@ -456,7 +464,11 @@ function NewAdvertisement() {
                   <option value="" disabled>
                     Select
                   </option>
-                  {brands.map((item ) => (<option key={item.id} value={item.id}>{item.name}</option>))}
+                  {brands.map((item) => (
+                    <option key={item.id} value={item.id}>
+                      {item.name}
+                    </option>
+                  ))}
                 </select>
               </div>
             </div>
@@ -475,7 +487,11 @@ function NewAdvertisement() {
                   <option value={""} disabled>
                     Select
                   </option>
-                  {fuelTypes.map((item ) => (<option key={item.id} value={item.id}>{item.name}</option>))}
+                  {fuelTypes.map((item) => (
+                    <option key={item.id} value={item.id}>
+                      {item.name}
+                    </option>
+                  ))}
                 </select>
               </div>
             </div>
@@ -494,7 +510,11 @@ function NewAdvertisement() {
                   <option value={""} disabled>
                     Select
                   </option>
-                  {brandModels.map((item ) => (<option key={item.id} value={item.id}>{item.name}</option>))}
+                  {brandModels.map((item) => (
+                    <option key={item.id} value={item.id}>
+                      {item.name}
+                    </option>
+                  ))}
                 </select>
               </div>
             </div>
@@ -513,7 +533,11 @@ function NewAdvertisement() {
                   <option value={""} disabled>
                     Select
                   </option>
-                  {gears.map((item ) => (<option key={item.id} value={item.id}>{item.name}</option>))}
+                  {gears.map((item) => (
+                    <option key={item.id} value={item.id}>
+                      {item.name}
+                    </option>
+                  ))}
                 </select>
               </div>
             </div>
@@ -532,7 +556,11 @@ function NewAdvertisement() {
                   <option value={""} disabled>
                     Select
                   </option>
-                  {banTypes.map((item ) => (<option key={item.id} value={item.id}>{item.name}</option>))}
+                  {banTypes.map((item) => (
+                    <option key={item.id} value={item.id}>
+                      {item.name}
+                    </option>
+                  ))}
                 </select>
               </div>
             </div>
@@ -551,14 +579,18 @@ function NewAdvertisement() {
                   <option value="" disabled>
                     Select
                   </option>
-                  {gearBoxs.map((item ) => (<option key={item.id} value={item.id}>{item.name}</option>))}
+                  {gearBoxs.map((item) => (
+                    <option key={item.id} value={item.id}>
+                      {item.name}
+                    </option>
+                  ))}
                 </select>
               </div>
             </div>
             <div className="col-span-12 md:col-span-6">
               <div className="flex space-y-2 md:space-y-0 md:items-center justify-between md:gap-[50px] md:flex-row flex-col">
                 <label className="font-primary text-[16px] font-normal text-secondary after:content-['*'] after:pl-[3px] after:top-0 after:relative after:text-red  relative ">
-                March
+                  March
                 </label>
                 <div className="flex items-center justify-between gap-x-8 md:max-w-[452px] w-full">
                   <div className="w-1/2 md:w-auto">
@@ -623,7 +655,11 @@ function NewAdvertisement() {
                   <option value={""} disabled>
                     Select
                   </option>
-                  {years.map((item ) => (<option key={item.id} value={item.id}>{item.name}</option>))}
+                  {years.map((item) => (
+                    <option key={item.id} value={item.id}>
+                      {item.name}
+                    </option>
+                  ))}
                 </select>
               </div>
             </div>
@@ -642,7 +678,11 @@ function NewAdvertisement() {
                   <option value={""} disabled>
                     Select
                   </option>
-                  {colors.map((item ) => (<option key={item.id} value={item.id}>{item.name}</option>))}
+                  {colors.map((item) => (
+                    <option key={item.id} value={item.id}>
+                      {item.name}
+                    </option>
+                  ))}
                 </select>
               </div>
             </div>
@@ -661,7 +701,11 @@ function NewAdvertisement() {
                   <option value={""} disabled>
                     Select
                   </option>
-                  {engineVolumes.map((item ) => (<option key={item.id} value={item.id}>{item.name}</option>))}
+                  {engineVolumes.map((item) => (
+                    <option key={item.id} value={item.id}>
+                      {item.name}
+                    </option>
+                  ))}
                 </select>
               </div>
             </div>
@@ -739,13 +783,15 @@ function NewAdvertisement() {
                 <label className="font-primary text-[16px] font-normal text-secondary after:content-['*'] after:pl-[3px] after:top-0 after:relative after:text-red  relative ">
                   Engine power.ag
                 </label>
-                <input className="md:max-w-[452px] w-full py-[10px] px-[15px] bg-white rounded-md border border-solid border-[#E4E4E4] font-primary text-[16px] text-secondary font-normal focus:outline-0" 
-                type="text" 
-                name="enginePower" 
-                id="enginePower" 
-                placeholder="Engine power.ag" 
-                value={formData.enginePower} 
-                onChange={handleChange} />
+                <input
+                  className="md:max-w-[452px] w-full py-[10px] px-[15px] bg-white rounded-md border border-solid border-[#E4E4E4] font-primary text-[16px] text-secondary font-normal focus:outline-0"
+                  type="text"
+                  name="enginePower"
+                  id="enginePower"
+                  placeholder="Engine power.ag"
+                  value={formData.enginePower}
+                  onChange={handleChange}
+                />
               </div>
             </div>
             <div className="col-span-12 md:col-span-6">
@@ -763,7 +809,11 @@ function NewAdvertisement() {
                   <option value="" disabled>
                     Select
                   </option>
-                  {owners.map((item ) => (<option key={item.id} value={item.id}>{item.name}</option>))}
+                  {owners.map((item) => (
+                    <option key={item.id} value={item.id}>
+                      {item.name}
+                    </option>
+                  ))}
                 </select>
               </div>
             </div>
@@ -782,7 +832,11 @@ function NewAdvertisement() {
                   <option value="" disabled>
                     Select
                   </option>
-                  {markets.map((item ) => (<option key={item.id} value={item.id}>{item.name}</option>))}
+                  {markets.map((item) => (
+                    <option key={item.id} value={item.id}>
+                      {item.name}
+                    </option>
+                  ))}
                 </select>
               </div>
             </div>
@@ -1325,47 +1379,123 @@ function NewAdvertisement() {
           <div className="grid grid-cols-12 gap-[30px] mt-[80px]">
             <div className="col-span-12 lg:col-span-6">
               <ul className="flex flex-col gap-y-[30px] picture-list ml-5">
-                <li>Photos must be taken in the territory of the Republic of Azerbaijan</li>
-                <li>Photos must be of good quality. The vehicle should be well-lit, there should be no logos and other inscriptions on the pictures. Screenshots are not accepted.</li>
+                <li>
+                  Photos must be taken in the territory of the Republic of
+                  Azerbaijan
+                </li>
+                <li>
+                  Photos must be of good quality. The vehicle should be
+                  well-lit, there should be no logos and other inscriptions on
+                  the pictures. Screenshots are not accepted.
+                </li>
               </ul>
             </div>
             <div className="col-span-12 lg:col-span-6">
               <ul className="flex flex-col gap-y-[30px] picture-list ml-5 lg:ml-0 ">
-                <li>Photos taken at the dealership must be uploaded from the registered dealership's account.</li>
-                <li>A vehicle sold by a private owner must not be photographed in or near the showroom/official service area.</li>
+                <li>
+                  Photos taken at the dealership must be uploaded from the
+                  registered dealership's account.
+                </li>
+                <li>
+                  A vehicle sold by a private owner must not be photographed in
+                  or near the showroom/official service area.
+                </li>
               </ul>
             </div>
           </div>
           <div className="grid grid-cols-12 mt-[117px]">
-          <div className="col-span-12">
-          <h2 className="uppercase font-secondary text-[26px] font-bold leading-8 text-primary">
-          Contact
-          </h2>
-          <p className="mt-[10px] font-primary text-secondary">No changes are made to the contact details after the advertisement is published.</p>
-          <div className="mt-[80px] flex flex-col gap-y-[30px]">
-          <div className="flex flex-col items-start md:flex-row md:items-center gap-y-3">
-              <label className="md:min-w-[244px] md:max-w-[244px] w-full" htmlFor="yourName">Your Name</label>
-              <input className="md:max-w-[452px] w-full py-[10px] px-[15px] bg-white rounded-md border border-solid border-[#E4E4E4] font-primary text-[16px] text-secondary font-normal focus:outline-0" type="text" name="userName" id="yourName" placeholder="Enter Your Name" value={formData.name} onChange={handleChange} />
+            <div className="col-span-12">
+              <h2 className="uppercase font-secondary text-[26px] font-bold leading-8 text-primary">
+                Contact
+              </h2>
+              <p className="mt-[10px] font-primary text-secondary">
+                No changes are made to the contact details after the
+                advertisement is published.
+              </p>
+              <div className="mt-[80px] flex flex-col gap-y-[30px]">
+                <div className="flex flex-col items-start md:flex-row md:items-center gap-y-3">
+                  <label
+                    className="md:min-w-[244px] md:max-w-[244px] w-full"
+                    htmlFor="yourName"
+                  >
+                    Your Name
+                  </label>
+                  <input
+                    className="md:max-w-[452px] w-full py-[10px] px-[15px] bg-white rounded-md border border-solid border-[#E4E4E4] font-primary text-[16px] text-secondary font-normal focus:outline-0"
+                    type="text"
+                    name="userName"
+                    id="yourName"
+                    placeholder="Enter Your Name"
+                    value={formData.name}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className="flex flex-col items-start md:flex-row md:items-center">
+                  <label
+                    className="md:min-w-[244px] md:max-w-[244px] w-full"
+                    htmlFor="userCity"
+                  >
+                    City
+                  </label>
+                  <select
+                    className="md:max-w-[452px] w-full py-[10px] px-[15px] bg-white rounded-md border border-solid border-[#E4E4E4] font-primary text-[16px] text-secondary font-normal focus:outline-0"
+                    name="userCity"
+                    id="userCity"
+                    placeholder="Enter Your City"
+                    value={formData.userCity}
+                    onChange={handleChange}
+                  >
+                    {cities.map((item) => (
+                      <option key={item.id} value={item.id}>
+                        {item.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="flex flex-col items-start md:flex-row md:items-center gap-y-3">
+                  <label
+                    className="md:min-w-[244px] md:max-w-[244px] w-full"
+                    htmlFor="userEmail"
+                  >
+                    E-mail
+                  </label>
+                  <input
+                    className="md:max-w-[452px] w-full py-[10px] px-[15px] bg-white rounded-md border border-solid border-[#E4E4E4] font-primary text-[16px] text-secondary font-normal focus:outline-0"
+                    type="Email"
+                    name="userEmail"
+                    id="userEmail"
+                    placeholder="moniruiux@gamil.com"
+                    value={formData.userEmail}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className="flex flex-col items-start md:flex-row md:items-center gap-y-3">
+                  <label
+                    className="md:min-w-[244px] md:max-w-[244px] w-full"
+                    htmlFor="userTel"
+                  >
+                    Mobile Number
+                  </label>
+                  <input
+                    className="md:max-w-[452px] w-full py-[10px] px-[15px] bg-white rounded-md border border-solid border-[#E4E4E4] font-primary text-[16px] text-secondary font-normal focus:outline-0"
+                    type="tel"
+                    name="userTel"
+                    id="userTel"
+                    placeholder="014656+546566+654"
+                    value={formData.userTel}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className="max-w-[700px] mt-30 flex justify-end">
+                  <button
+                    className="md:min-w-[452px] min-w-full text-[16px] font-primary text-white  py-[18px] px-[20px] outline-none rounded-md font-medium bg-link"
+                    type="submit"
+                  >
+                    Continue
+                  </button>
+                </div>
+              </div>
             </div>
-            <div className="flex flex-col items-start md:flex-row md:items-center">
-              <label className="md:min-w-[244px] md:max-w-[244px] w-full" htmlFor="userCity">City</label>
-              <select className="md:max-w-[452px] w-full py-[10px] px-[15px] bg-white rounded-md border border-solid border-[#E4E4E4] font-primary text-[16px] text-secondary font-normal focus:outline-0" name="userCity" id="userCity" placeholder="Enter Your City" value={formData.userCity} onChange={handleChange} >
-              {cities.map((item ) => (<option key={item.id} value={item.id}>{item.name}</option>))}
-              </select>
-            </div>
-            <div className="flex flex-col items-start md:flex-row md:items-center gap-y-3">
-              <label className="md:min-w-[244px] md:max-w-[244px] w-full" htmlFor="userEmail">E-mail</label>
-              <input className="md:max-w-[452px] w-full py-[10px] px-[15px] bg-white rounded-md border border-solid border-[#E4E4E4] font-primary text-[16px] text-secondary font-normal focus:outline-0" type="Email" name="userEmail" id="userEmail" placeholder="moniruiux@gamil.com" value={formData.userEmail} onChange={handleChange} />
-            </div>
-            <div className="flex flex-col items-start md:flex-row md:items-center gap-y-3">
-              <label className="md:min-w-[244px] md:max-w-[244px] w-full" htmlFor="userTel">Mobile Number</label>
-              <input className="md:max-w-[452px] w-full py-[10px] px-[15px] bg-white rounded-md border border-solid border-[#E4E4E4] font-primary text-[16px] text-secondary font-normal focus:outline-0" type="tel" name="userTel" id="userTel" placeholder="014656+546566+654" value={formData.userTel} onChange={handleChange} />
-            </div>
-            <div className="max-w-[700px] mt-30 flex justify-end">
-              <button className="md:min-w-[452px] min-w-full text-[16px] font-primary text-white  py-[18px] px-[20px] outline-none rounded-md font-medium bg-link" type="submit">Continue</button>
-            </div>
-          </div>
-          </div>
           </div>
         </div>
       </div>

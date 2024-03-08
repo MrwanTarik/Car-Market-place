@@ -5,7 +5,8 @@ import { useContext } from "react";
 import FilterContext from "../../context/filterContext/FilterContext";
 function FuelType() {
   const [fuelTypes, setFuelTypes] = useState([]);
-  const { checkedFuelType, setCheckedFuelType, setCheckedFuelTypeIds } = useContext(FilterContext);
+  const { checkedFuelType, setCheckedFuelType, setCheckedFuelTypeIds } =
+    useContext(FilterContext);
   const detailsRef = useRef(null);
 
   const handleCheckboxChange = (event) => {
@@ -15,16 +16,19 @@ function FuelType() {
       ...prevItems,
       [item]: !prevItems[item],
     }));
-
-    setCheckedFuelTypeIds((prevItems) => ([...prevItems, itemId]));
-
+    setCheckedFuelTypeIds((prevItems) => {
+      if (prevItems.includes(itemId)) {
+        return prevItems.filter((item) => item !== itemId);
+      } else {
+        return [...prevItems, itemId];
+      }
+    });
   };
-  
 
   useEffect(() => {
     async function getFuelTypes() {
       try {
-        const response = await axios.get("http://localhost:8000/api/fuel-types");
+        const response = await axios.get("https://kibcar.com/api/fuel-types");
         setFuelTypes(response.data);
       } catch (error) {
         console.log(error);

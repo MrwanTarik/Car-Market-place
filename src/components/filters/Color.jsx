@@ -4,7 +4,8 @@ import chivronBottom from "../../assets/icons/chivron-bottom.svg";
 import { useContext } from "react";
 import FilterContext from "../../context/filterContext/FilterContext";
 function City() {
-  const { checkedColor, setCheckedColor, setCheckedColorIds } = useContext(FilterContext);
+  const { checkedColor, setCheckedColor, setCheckedColorIds } =
+    useContext(FilterContext);
   const detailsRef = useRef(null);
   const [colors, setColors] = useState([]);
 
@@ -15,13 +16,20 @@ function City() {
       ...prevItems,
       [item]: !prevItems[item],
     }));
-
-    setCheckedColorIds((prevItems) => ([...prevItems, colorId]));
+    setCheckedColorIds((prevItems) => {
+      if (prevItems.includes(colorId)) {
+        return prevItems.filter((item) => item !== colorId);
+      } else {
+        return [...prevItems, colorId];
+      }
+    });
   };
   useEffect(() => {
     async function getColors() {
       try {
-        const response = await axios.get("http://localhost:8000/api/vehicle-colors");
+        const response = await axios.get(
+          "https://kibcar.com/api/vehicle-colors"
+        );
         setColors(response.data);
       } catch (error) {
         console.log(error);
@@ -46,10 +54,11 @@ function City() {
                 Color
               </p>
             )}
-            <p className="font-primary text-[16px] font-normal">{summaryText}</p>
+            <p className="font-primary text-[16px] font-normal">
+              {summaryText}
+            </p>
           </div>
 
-          
           <img src={chivronBottom} alt="chivron-Bottom" />
         </summary>
 

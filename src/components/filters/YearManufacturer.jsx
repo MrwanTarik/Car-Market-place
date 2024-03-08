@@ -1,17 +1,18 @@
-import { useRef,useEffect, useState } from "react";
+import { useRef, useEffect, useState } from "react";
 import axios from "axios";
 import chivronBottom from "../../assets/icons/chivron-bottom.svg";
 import { useContext } from "react";
 import FilterContext from "../../context/filterContext/FilterContext";
 function YearManufacturer() {
-  const { selectedYearManufactured, setSelectedYearManufactured } = useContext(FilterContext);
+  const { selectedYearManufactured, setSelectedYearManufactured } =
+    useContext(FilterContext);
   const [years, setYears] = useState([]);
   const detailsRef = useRef(null);
 
   const handleSelection = (item) => {
     setSelectedYearManufactured(item.name);
     if (detailsRef.current) {
-      detailsRef.current.removeAttribute('open');
+      detailsRef.current.removeAttribute("open");
     }
   };
 
@@ -19,7 +20,9 @@ function YearManufacturer() {
   useEffect(() => {
     async function getVehicleYears() {
       try {
-        const response = await axios.get("http://localhost:8000/api/vehicle-years");
+        const response = await axios.get(
+          "https://kibcar.com/api/vehicle-years"
+        );
         setYears(response.data);
       } catch (error) {
         console.log(error);
@@ -34,7 +37,9 @@ function YearManufacturer() {
         <summary className="flex items-center justify-between w-full h-full px-5 py-4 bg-white border-none rounded-lg shadow-md btn shadow-input">
           <div>
             {selectedYearManufactured && (
-              <p className="font-primary mb-1 text-[12px] opacity-70 text-secondary text-start">Year</p>
+              <p className="font-primary mb-1 text-[12px] opacity-70 text-secondary text-start">
+                Year
+              </p>
             )}
             <p className="font-primary text-[16px] font-normal">
               {selectedYearManufactured || "Year"}

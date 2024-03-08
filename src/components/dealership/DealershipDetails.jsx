@@ -11,7 +11,7 @@ function DealershipDetails() {
     async function fetchDealershipDetails() {
       try {
         const response = await fetch(
-          `http://localhost:8000/api/car-dealerships/${dealershipId}/announcements`
+          `https://kibcar.com/api/car-dealerships/${dealershipId}/announcements`
         );
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -26,7 +26,7 @@ function DealershipDetails() {
     const fetchAdContent = async () => {
       try {
         const response = await fetch(
-          `http://localhost:8000/api/car-dealerships/${dealershipId}`
+          `https://kibcar.com/api/car-dealerships/${dealershipId}`
         );
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);

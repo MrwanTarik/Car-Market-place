@@ -5,7 +5,8 @@ import { useContext } from "react";
 import FilterContext from "../../context/filterContext/FilterContext";
 function Gear() {
   const [gears, setGears] = useState([]);
-  const { checkedGear, setCheckedGear, setCheckedGearIds } = useContext(FilterContext);
+  const { checkedGear, setCheckedGear, setCheckedGearIds } =
+    useContext(FilterContext);
   const detailsRef = useRef(null);
 
   const handleCheckboxChange = (event) => {
@@ -15,14 +16,18 @@ function Gear() {
       ...prevItems,
       [item]: !prevItems[item],
     }));
-
-    setCheckedGearIds((prevItems) => ([...prevItems, itemId]));
-
+    setCheckedGearIds((prevItems) => {
+      if (prevItems.includes(itemId)) {
+        return prevItems.filter((item) => item !== itemId);
+      } else {
+        return [...prevItems, itemId];
+      }
+    });
   };
   useEffect(() => {
     async function getGears() {
       try {
-        const response = await axios.get("http://localhost:8000/api/gears");
+        const response = await axios.get("https://kibcar.com/api/gears");
         setGears(response.data);
       } catch (error) {
         console.log(error);

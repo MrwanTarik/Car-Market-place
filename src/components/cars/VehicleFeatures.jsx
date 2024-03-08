@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext } from "react";
 import FilterContext from "../../context/filterContext/FilterContext";
 
 function VehicleFeatures() {
@@ -7,24 +7,21 @@ function VehicleFeatures() {
   // State to track the selected feature IDs
   const [selectedFeatureIds, setSelectedFeatureIds] = useState([]);
 
-  const { 
-    setFeaturesIds 
-  } = useContext(FilterContext);
+  const { setFeaturesIds } = useContext(FilterContext);
 
   useEffect(() => {
-
     async function getFeatures() {
       try {
-        const response = await axios.get("http://localhost:8000/api/vehicle-features");
+        const response = await axios.get(
+          "https://kibcar.com/api/vehicle-features"
+        );
         setFeatures(response.data);
       } catch (error) {
         console.log(error);
       }
     }
     getFeatures();
-
-  }, [])
-
+  }, []);
 
   // Function to handle checkbox changes
   const handleChange = (id) => {
@@ -32,13 +29,16 @@ function VehicleFeatures() {
     const isSelected = selectedFeatureIds.includes(id);
     if (isSelected) {
       // Remove the ID from the selected IDs if it's already selected
-      setSelectedFeatureIds(selectedFeatureIds.filter(featureId => featureId !== id));
-      setFeaturesIds(selectedFeatureIds.filter(featureId => featureId !== id))
-
+      setSelectedFeatureIds(
+        selectedFeatureIds.filter((featureId) => featureId !== id)
+      );
+      setFeaturesIds(
+        selectedFeatureIds.filter((featureId) => featureId !== id)
+      );
     } else {
       // Add the ID to the selected IDs if it's not already selected
       setSelectedFeatureIds([...selectedFeatureIds, id]);
-      setFeaturesIds([...selectedFeatureIds, id])
+      setFeaturesIds([...selectedFeatureIds, id]);
     }
   };
 

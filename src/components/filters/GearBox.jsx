@@ -5,7 +5,8 @@ import { useContext } from "react";
 import FilterContext from "../../context/filterContext/FilterContext";
 function GearBox() {
   const [gearBoxs, setGearBoxs] = useState([]);
-  const { checkedGearBox, setCheckedGearBox, setCheckedGearBoxIds } = useContext(FilterContext);
+  const { checkedGearBox, setCheckedGearBox, setCheckedGearBoxIds } =
+    useContext(FilterContext);
   const detailsRef = useRef(null);
 
   const handleCheckboxChange = (event) => {
@@ -16,14 +17,20 @@ function GearBox() {
       ...prevItems,
       [item]: !prevItems[item],
     }));
-
-    setCheckedGearBoxIds((prevItems) => ([...prevItems, itemId]));
-
+    setCheckedGearBoxIds((prevItems) => {
+      if (prevItems.includes(itemId)) {
+        return prevItems.filter((item) => item !== itemId);
+      } else {
+        return [...prevItems, itemId];
+      }
+    });
   };
   useEffect(() => {
     async function getGearBoxs() {
       try {
-        const response = await axios.get("http://localhost:8000/api/vehicle-transmissions");
+        const response = await axios.get(
+          "https://kibcar.com/api/vehicle-transmissions"
+        );
         setGearBoxs(response.data);
       } catch (error) {
         console.log(error);

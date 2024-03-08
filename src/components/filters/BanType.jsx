@@ -5,7 +5,8 @@ import { useContext } from "react";
 import FilterContext from "../../context/filterContext/FilterContext";
 function BanType() {
   const [banTypes, setBanTypes] = useState([]);
-  const { checkedBanType, setCheckedBanType, setCheckedBanTypeIds } = useContext(FilterContext);
+  const { checkedBanType, setCheckedBanType, setCheckedBanTypeIds } =
+    useContext(FilterContext);
   const detailsRef = useRef(null);
 
   const handleCheckboxChange = (event) => {
@@ -15,14 +16,21 @@ function BanType() {
       ...prevItems,
       [item]: !prevItems[item],
     }));
-    setCheckedBanTypeIds((prevItems) => ([...prevItems, banTypeId]));
-
+    setCheckedBanTypeIds((prevItems) => {
+      if (prevItems.includes(banTypeId)) {
+        return prevItems.filter((item) => item !== banTypeId);
+      } else {
+        return [...prevItems, banTypeId];
+      }
+    });
   };
 
   useEffect(() => {
     async function getBanTypes() {
       try {
-        const response = await axios.get("http://localhost:8000/api/vehicle-categories");
+        const response = await axios.get(
+          "https://kibcar.com/api/vehicle-categories"
+        );
         setBanTypes(response.data);
       } catch (error) {
         console.log(error);
@@ -48,10 +56,11 @@ function BanType() {
                 Ban Type
               </p>
             )}
-            <p className="font-primary text-[16px] font-normal">{summaryText}</p>
+            <p className="font-primary text-[16px] font-normal">
+              {summaryText}
+            </p>
           </div>
 
-          
           <img src={chivronBottom} alt="chivron-Bottom" />
         </summary>
 

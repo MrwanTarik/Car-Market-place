@@ -5,7 +5,11 @@ import { useContext } from "react";
 import FilterContext from "../../context/filterContext/FilterContext";
 function Market() {
   const [markets, setMarkets] = useState([]);
-  const { checkedMarketAssembled, setCheckedMarketAssembled, setCheckedMarketAssembledIds } = useContext(FilterContext);
+  const {
+    checkedMarketAssembled,
+    setCheckedMarketAssembled,
+    setCheckedMarketAssembledIds,
+  } = useContext(FilterContext);
   const detailsRef = useRef(null);
 
   const handleCheckboxChange = (event) => {
@@ -15,17 +19,21 @@ function Market() {
       ...prevItems,
       [item]: !prevItems[item],
     }));
-
-
-    setCheckedMarketAssembledIds((prevItems) => ([...prevItems, itemId]));
-
+    setCheckedMarketAssembledIds((prevItems) => {
+      if (prevItems.includes(itemId)) {
+        return prevItems.filter((item) => item !== itemId);
+      } else {
+        return [...prevItems, itemId];
+      }
+    });
   };
 
-  
   useEffect(() => {
     async function getMarkets() {
       try {
-        const response = await axios.get("http://localhost:8000/api/vehicle-markets");
+        const response = await axios.get(
+          "https://kibcar.com/api/vehicle-markets"
+        );
         setMarkets(response.data);
       } catch (error) {
         console.log(error);
@@ -33,7 +41,6 @@ function Market() {
     }
     getMarkets();
   }, []);
-
 
   const selectedOptions = Object.keys(checkedMarketAssembled).filter(
     (item) => checkedMarketAssembled[item]

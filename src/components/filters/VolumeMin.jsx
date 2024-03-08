@@ -11,14 +11,16 @@ function VolumeMin() {
   const handleSelection = (item) => {
     setSelectedVolumeMin(item.name);
     if (detailsRef.current) {
-      detailsRef.current.removeAttribute('open');
+      detailsRef.current.removeAttribute("open");
     }
   };
 
   useEffect(() => {
     async function getEngineVolumes() {
       try {
-        const response = await axios.get("http://localhost:8000/api/vehicle-engine-volumes");
+        const response = await axios.get(
+          "https://kibcar.com/api/vehicle-engine-volumes"
+        );
         setEngineVolumes(response.data);
       } catch (error) {
         console.log(error);
@@ -27,14 +29,15 @@ function VolumeMin() {
     getEngineVolumes();
   }, []);
 
-  
   return (
     <div className="h-full">
       <details ref={detailsRef} className="w-full h-full dropdown">
         <summary className="flex items-center justify-between w-full h-full px-5 py-4 bg-white border-none rounded-lg shadow-md btn shadow-input">
           <div className="text-start">
             {selectedVolumeMin && (
-              <p className="font-primary mb-1 text-[12px] opacity-70 text-secondary text-start">Volume (cm.3)</p>
+              <p className="font-primary mb-1 text-[12px] opacity-70 text-secondary text-start">
+                Volume (cm.3)
+              </p>
             )}
             <p className="font-primary text-[16px] font-normal">
               {selectedVolumeMin || "Volume (cm.3)"}

@@ -23,7 +23,7 @@ function Brand() {
   useEffect(() => {
     async function getBrands() {
       try {
-        const response = await axios.get("http://localhost:8000/api/brands");
+        const response = await axios.get("https://kibcar.com/api/brands");
         setBrands(response.data);
         console.log(brands);
       } catch (error) {

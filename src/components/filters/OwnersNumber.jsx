@@ -5,7 +5,11 @@ import { useContext } from "react";
 import FilterContext from "../../context/filterContext/FilterContext";
 function OwnersNumber() {
   const [ownersNumber, setOwnersNumber] = useState([]);
-  const { checkedOwnersNumber, setCheckedOwnersNumber, setCheckedOwnersNumberIds } = useContext(FilterContext);
+  const {
+    checkedOwnersNumber,
+    setCheckedOwnersNumber,
+    setCheckedOwnersNumberIds,
+  } = useContext(FilterContext);
   const detailsRef = useRef(null);
 
   const handleCheckboxChange = (event) => {
@@ -15,14 +19,20 @@ function OwnersNumber() {
       ...prevItems,
       [item]: !prevItems[item],
     }));
-
-    setCheckedOwnersNumberIds((prevItems) => ([...prevItems, itemId]));
-
+    setCheckedOwnersNumberIds((prevItems) => {
+      if (prevItems.includes(itemId)) {
+        return prevItems.filter((item) => item !== itemId);
+      } else {
+        return [...prevItems, itemId];
+      }
+    });
   };
   useEffect(() => {
     async function getSeatsNumber() {
       try {
-        const response = await axios.get("http://localhost:8000/api/vehicle-prior-owners");
+        const response = await axios.get(
+          "https://kibcar.com/api/vehicle-prior-owners"
+        );
         setOwnersNumber(response.data);
       } catch (error) {
         console.log(error);
@@ -35,7 +45,9 @@ function OwnersNumber() {
   );
 
   const summaryText =
-    selectedOptions.length === 0 ? "Number of Owners" : selectedOptions.join(", ");
+    selectedOptions.length === 0
+      ? "Number of Owners"
+      : selectedOptions.join(", ");
 
   return (
     <div className="h-full">
@@ -47,10 +59,11 @@ function OwnersNumber() {
                 Number of Owners
               </p>
             )}
-            <p className="font-primary text-[16px] font-normal text-start">{summaryText}</p>
+            <p className="font-primary text-[16px] font-normal text-start">
+              {summaryText}
+            </p>
           </div>
 
-          
           <img src={chivronBottom} alt="chivron-Bottom" />
         </summary>
 

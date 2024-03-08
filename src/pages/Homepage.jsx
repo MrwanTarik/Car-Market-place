@@ -29,99 +29,101 @@ import Market from "../components/filters/Market";
 import { useContext } from "react";
 import FilterContext from "../context/filterContext/FilterContext";
 import VipAnnouncement from "../components/cars/VipAnnouncement";
-import RecentAnnouncement from "../components/cars/RecentAnnouncement"
+import RecentAnnouncement from "../components/cars/RecentAnnouncement";
 import PremiumAds from "../components/cars/PremiumAds";
 import VehicleFeatures from "../components/cars/VehicleFeatures";
 function Homepage() {
+  const [premiumAds, setPremiumAds] = useState([]);
+  const [ads, setAds] = useState([]);
+  const [adsCount, setAdsCount] = useState(0);
 
-  const [premiumAds, setPremiumAds] = useState([])
-  const [ads, setAds] = useState([])
-  const [adsCount, setAdsCount] = useState(0)
+  const { newAds, moreFilters, handleMoreFilters, setPaymentOptions } =
+    useContext(FilterContext);
 
+  const filterContextData = useContext(FilterContext);
 
-  const { 
-      newAds, 
-      moreFilters, 
-      handleMoreFilters, 
-      setPaymentOptions, 
-    } = useContext(FilterContext);
+  useEffect(() => {
+    async function getAds() {
+      try {
+        const response = await axios.get(
+          "https://kibcar.com/api/announcements/filter"
+        );
+        setPremiumAds(response.data.premiumAnnouncements);
+        setAds(response.data.announcements);
+        setAdsCount(
+          response.data.announcementsCount +
+            response.data.premiumAnnouncementsCount
+        );
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    getAds();
+  }, []);
 
-    const filterContextData = useContext(FilterContext);
+  const showFilterPayload = async () => {
+    try {
+      const data = {
+        barter: filterContextData.paymentOptions.barter,
+        brand: filterContextData.brandId?.brand,
+        min_price: filterContextData.minPrice,
+        max_price: filterContextData.maxPrice,
+        brand_model: filterContextData.checkedModelsIds,
+        city: filterContextData.checkedCityIds, // Todo: Uncomment or remove this line based on your requirement
+        fuel_type: filterContextData.checkedFuelTypeIds,
+        is_crashed: filterContextData.paymentOptions.noPunctuation
+          ? !filterContextData.paymentOptions.noPunctuation
+          : null,
+        is_painted: filterContextData.paymentOptions.notColored
+          ? !filterContextData.paymentOptions.notColored
+          : null,
+        for_spare_parts: filterContextData.paymentOptions.accidentalCars,
+        gear: filterContextData.checkedGearIds,
+        loan: filterContextData.paymentOptions.credit,
+        max_engine_power: filterContextData.maxPower,
+        min_engine_power: filterContextData.minPower,
+        max_mileage: filterContextData.maxMileage,
+        min_mileage: filterContextData.minMileage,
+        max_vehicle_engine_volume: filterContextData.selectedVolumeMax,
+        min_vehicle_engine_volume: filterContextData.selectedVolumeMin,
+        max_vehicle_year: filterContextData.selectedMaxYearManufactured,
+        min_vehicle_year: filterContextData.selectedYearManufactured,
+        number_of_seats: filterContextData.checkedSeatsNumberIds,
+        price_currency: filterContextData.selectedCurrency,
+        vehicle_category: filterContextData.checkedBanTypeIds,
+        vehicle_color: filterContextData.checkedColorIds,
+        vehicle_market: filterContextData.checkedMarketAssembledIds,
+        vehicle_prior_owner: filterContextData.checkedOwnersNumberIds,
+        vehicle_status: filterContextData.selectedType,
+        vehicle_transmission: filterContextData.checkedGearBoxIds,
+        ownership_type: filterContextData.selectedCarType,
+        features: filterContextData.featuresIds,
+      };
 
+      const config = {
+        method: "GET",
+        url: "https://kibcar.com/api/announcements/filter",
+        params: data,
+      };
 
-    useEffect(() => {
-
-      async function getAds() {
-        try {
-          const response = await axios.get("http://localhost:8000/api/announcements/filter");
+      axios(config)
+        .then(function (response) {
           setPremiumAds(response.data.premiumAnnouncements);
           setAds(response.data.announcements);
-          setAdsCount(response.data.announcementsCount + response.data.premiumAnnouncementsCount)
-        } catch (error) {
+          setAdsCount(
+            response.data.announcementsCount +
+              response.data.premiumAnnouncementsCount
+          );
+          console.log(JSON.stringify(response.data));
+        })
+        .catch(function (error) {
           console.log(error);
-        }
-      }
-      getAds();
-
-    }, [])
-
-    const showFilterPayload = async () => {
-
-      try {
-        const data = {
-            barter: filterContextData.paymentOptions.barter,
-            brand: filterContextData.brandId?.brand,
-            min_price: filterContextData.minPrice,
-            max_price: filterContextData.maxPrice,
-            brand_model: filterContextData.checkedModelsIds,
-            city: filterContextData.checkedCityIds, // Todo: Uncomment or remove this line based on your requirement
-            fuel_type: filterContextData.checkedFuelTypeIds,
-            is_crashed: filterContextData.paymentOptions.noPunctuation ? !filterContextData.paymentOptions.noPunctuation : null,
-            is_painted: filterContextData.paymentOptions.notColored ? !filterContextData.paymentOptions.notColored : null,
-            for_spare_parts: filterContextData.paymentOptions.accidentalCars,
-            gear: filterContextData.checkedGearIds,
-            loan: filterContextData.paymentOptions.credit,
-            max_engine_power: filterContextData.maxPower,
-            min_engine_power: filterContextData.minPower,
-            max_mileage: filterContextData.maxMileage,
-            min_mileage: filterContextData.minMileage,
-            max_vehicle_engine_volume: filterContextData.selectedVolumeMax,
-            min_vehicle_engine_volume: filterContextData.selectedVolumeMin,
-            max_vehicle_year: filterContextData.selectedMaxYearManufactured,
-            min_vehicle_year: filterContextData.selectedYearManufactured,
-            number_of_seats: filterContextData.checkedSeatsNumberIds,
-            price_currency: filterContextData.selectedCurrency,
-            vehicle_category: filterContextData.checkedBanTypeIds,
-            vehicle_color: filterContextData.checkedColorIds,
-            vehicle_market: filterContextData.checkedMarketAssembledIds,
-            vehicle_prior_owner: filterContextData.checkedOwnersNumberIds,
-            vehicle_status: filterContextData.selectedType,
-            vehicle_transmission: filterContextData.checkedGearBoxIds,
-            ownership_type: filterContextData.selectedCarType,
-            features: filterContextData.featuresIds
-        };
-      
-        const config = {
-            method: 'GET',
-            url: 'http://localhost:8000/api/announcements/filter',
-            params: data
-        };
-        
-        axios(config)
-            .then(function (response) {
-              setPremiumAds(response.data.premiumAnnouncements);
-              setAds(response.data.announcements);
-              setAdsCount(response.data.announcementsCount + response.data.premiumAnnouncementsCount)
-                console.log(JSON.stringify(response.data));
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
-        } catch (error) {
-          console.log(error);
-        }
+        });
+    } catch (error) {
+      console.log(error);
     }
-  
+  };
+
   return (
     <main className="container mt-[30px]">
       <form action="" onSubmit={(e) => e.preventDefault()}>
@@ -246,7 +248,6 @@ function Homepage() {
             </div>
           </div>
           <VehicleFeatures />
-        
         </div>
         <div className="grid grid-cols-12 gap-[30px]">
           <div className="col-span-12  mt-[70px] ">
@@ -277,7 +278,10 @@ function Homepage() {
                   </button>
                 </div>
                 <div>
-                  <button  onClick={showFilterPayload} className="text-white rounded-md shadow-lg bg-red py-[14px] px-[20px] font-primary text-[16px] font-medium md:ml-14 ml-[20px] flex items-center ">
+                  <button
+                    onClick={showFilterPayload}
+                    className="text-white rounded-md shadow-lg bg-red py-[14px] px-[20px] font-primary text-[16px] font-medium md:ml-14 ml-[20px] flex items-center "
+                  >
                     <img
                       className="mr-[10px]"
                       src={notifiedIcon}
@@ -291,8 +295,15 @@ function Homepage() {
           </div>
         </div>
       </form>
-      {premiumAds.length > 0 && <VipAnnouncement announcements={premiumAds} title={'Premium Announcements'} />}
-      {ads.length && <VipAnnouncement announcements={ads} title={'Announcements'} />}
+      {premiumAds.length > 0 && (
+        <VipAnnouncement
+          announcements={premiumAds}
+          title={"Premium Announcements"}
+        />
+      )}
+      {ads.length && (
+        <VipAnnouncement announcements={ads} title={"Announcements"} />
+      )}
 
       {/* {ads && <RecentAnnouncement announcements={ads} />} */}
       {/* {premiumAds && <PremiumAds premiumAds={premiumAds} />} */}

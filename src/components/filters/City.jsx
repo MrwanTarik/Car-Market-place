@@ -1,10 +1,11 @@
-import { useRef, useEffect, useState} from "react";
+import { useRef, useEffect, useState } from "react";
 import axios from "axios";
 import chivronBottom from "../../assets/icons/chivron-bottom.svg";
 import { useContext } from "react";
 import FilterContext from "../../context/filterContext/FilterContext";
 function City() {
-  const { checkedCity, setCheckedCity, setCheckedCityIds } = useContext(FilterContext);
+  const { checkedCity, setCheckedCity, setCheckedCityIds } =
+    useContext(FilterContext);
   const detailsRef = useRef(null);
 
   const [cities, setCities] = useState([]);
@@ -16,17 +17,19 @@ function City() {
       ...prevItems,
       [item]: !prevItems[item],
     }));
-
-    setCheckedCityIds((prevItems) => ([...prevItems, cityId]));
-
+    setCheckedCityIds((prevItems) => {
+      if (prevItems.includes(cityId)) {
+        return prevItems.filter((item) => item !== cityId);
+      } else {
+        return [...prevItems, cityId];
+      }
+    });
   };
 
   useEffect(() => {
     async function getCities() {
       try {
-        const response = await axios.get(
-          `http://localhost:8000/api/cities`
-        );
+        const response = await axios.get(`https://kibcar.com/api/cities`);
         setCities(response.data);
       } catch (error) {
         console.log(error);
@@ -52,16 +55,17 @@ function City() {
                 City
               </p>
             )}
-            <p className="font-primary text-[16px] font-normal">{summaryText}</p>
+            <p className="font-primary text-[16px] font-normal">
+              {summaryText}
+            </p>
           </div>
 
-          
           <img src={chivronBottom} alt="chivron-Bottom" />
         </summary>
 
         <ul className="p-2 z-[1] shadow menu dropdown-content bg-base-100 flex flex-col flex-nowrap justify-start w-full mt-2 rounded-lg max-h-[210px] overflow-y-auto">
           {cities.map((item) => (
-            <li key={'city' + item.id} className="flex items-center">
+            <li key={"city" + item.id} className="flex items-center">
               <label className="flex items-center w-full px-2 py-1 text-secondary font-primary">
                 <input
                   type="checkbox"
