@@ -10,8 +10,7 @@
   padding: 0;
   box-sizing: border-box;
 }
-favourite-sec
-input[type="number"]::-webkit-inner-spin-button,
+favourite-sec input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
@@ -27,7 +26,7 @@ input[type="checkbox"] {
 input[type="checkbox"]:checked {
   background-color: #fa9e57;
 }
-.advertisement-list{
+.advertisement-list {
   list-style: outside;
   padding-left: 30px;
 }
@@ -35,7 +34,7 @@ select {
   -webkit-appearance: none; /* For Chrome and Safari */
   -moz-appearance: none; /* For Firefox */
   appearance: none; /* For modern browsers */
-  background-image: url('./assets/images/arrow-bot.png'); /* Path to your custom arrow image */
+  background-image: url("./assets/images/arrow-bot.png"); /* Path to your custom arrow image */
   background-repeat: no-repeat;
   background-position: right 15px center; /* Adjust as necessary */
   background-size: 15px; /* Adjust as necessary */
@@ -138,7 +137,10 @@ textarea {
     width: 100%;
     justify-content: space-between;
   }
-  body p, body label , body input, body button{
+  body p,
+  body label,
+  body input,
+  body button {
     font-size: 14px !important;
   }
   .footer {
@@ -147,4 +149,7 @@ textarea {
     gap: 20px;
     align-items: flex-start;
   }
+}
+body {
+  position: relative;
 }

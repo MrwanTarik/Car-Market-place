@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 const links = [
   {
     name: "Help",
@@ -18,9 +18,15 @@ const links = [
   },
 ];
 function Footer() {
+  const location = useLocation();
+  const isCarDetailsRoute = location.pathname.startsWith("/car-details/");
   return (
     <>
-      <div className="bg-[#E2E2E2] mt-[120px] py-5">
+      <div
+        className={`bg-[#E2E2E2]  py-5 ${
+          isCarDetailsRoute ? "mt-[0px]" : "mt-[120px]"
+        }`}
+      >
         <div className="container">
           <div className="flex flex-wrap gap-[30px] items-center ">
             {links.map((link) => (

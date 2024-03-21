@@ -11,6 +11,7 @@ import Faq from "./pages/Faq";
 import Favourite from "./pages/Favourite";
 import NewAdvertisement from "./pages/NewAdvertisement";
 import CarDetails from "./pages/CarDetails";
+import EditAdvertisement from "./pages/EditAdvertisement";
 
 function App() {
   return (
@@ -28,6 +29,10 @@ function App() {
             <Route path="/help" element={<Faq />} />
             <Route path="/favourite" element={<Favourite />} />
             <Route path="/new-advertisement" element={<NewAdvertisement />} />
+            <Route
+              path="/edit-advertisement/:id"
+              element={<EditAdvertisement />}
+            />
             <Route path="/car-details/:id" element={<CarDetails />} />
           </Routes>
         </Suspense>
